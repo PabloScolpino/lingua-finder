@@ -1,0 +1,17 @@
+.container
+  h1
+    = @search.query
+
+  .results
+    table
+      thead
+        tr
+          th.data-field Palabra
+          th.data-field Cantidad
+      tbody
+        - @results.sort_by{|k,v| v}.reverse.each do |word, count|
+          tr onclick="location.href='#{search_results_path({search_id: @search.id, word: word})}'"
+            td = word
+            td = count
+
+  = link_to 'Atras', searches_path, class: 'btn'

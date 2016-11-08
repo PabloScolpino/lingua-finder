@@ -1,0 +1,26 @@
+.container
+  .row
+    h1 = @search.query
+
+  .row
+    h2 = params[:word]
+
+  /.row
+    .col.s12
+      ul.tabs
+      - @alternatives.each do |word,_|
+        li.tab
+          = link_to "#{word}",search_results_path({search_id: @search.id, word: word})
+
+  .row id="#{params[:word]}"
+    table
+      tbody
+        - @results.each do |result|
+          tr
+            td.right-align = result.context.split(result.word).first
+            td.center-align
+              strong = result.word
+            td.left-align = result.context.split(result.word).second
+
+  .row
+    = link_to 'Atras', search_path(@search.id), class: 'btn'

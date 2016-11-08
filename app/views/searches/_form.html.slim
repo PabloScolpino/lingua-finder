@@ -1,0 +1,17 @@
+= simple_form_for search do |f|
+  - if search.errors.any?
+    div#error_explanation
+      h2 = "#{pluralize(search.errors.count, "error")} evitaron que se pudiera guardar esta busqueda"
+
+      ul
+      - search.errors.full_messages.each do |message|
+        li = message
+
+  .col.s12.input-field
+    = f.input :query, label: 'Criterio'
+
+  .col.s12.input-field
+    = f.input :country_code, as: :country,  priority: ['AR', 'UY'], label: false
+
+  .actions
+    = f.button :submit, 'Dale!', class: 'btn'

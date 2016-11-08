@@ -1,0 +1,11 @@
+table
+  thead
+    tr
+      th Contexto
+      th colspan="1"
+
+  tbody
+    - @ocurrences.each do |ocurrence|
+      tr
+        td = ocurrence.context
+        td = link_to 'Show', ocurrence
