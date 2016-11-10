@@ -52,13 +52,6 @@ RSpec.describe SearchesController, type: :controller do
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new search as @search" do
-      get :new, params: {}, session: valid_session
-      expect(assigns(:search)).to be_a_new(Search)
-    end
-  end
-
   describe "GET #edit" do
     it "assigns the requested search as @search" do
       search = Search.create! valid_attributes
