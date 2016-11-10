@@ -3,7 +3,7 @@ class Search < ApplicationRecord
 
   validates :query, presence: true
 
-  after_commit :queue_search
+  after_commit :queue_search, on: :create
   before_destroy :check_processing
 
   def scrape_internet
@@ -44,9 +44,6 @@ class Search < ApplicationRecord
     response.each do |page|
       r << page['items'].map { |item| item['link'] }
     end
-
-    #page = GoogleCustomSearchApi.search(q, options)
-    #r = page['items'].map { |item| item['link'] }
     r
   end
 
