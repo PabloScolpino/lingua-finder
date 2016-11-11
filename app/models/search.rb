@@ -29,7 +29,6 @@ class Search < ApplicationRecord
     formated_query = query.gsub('<?>','')
     formated_query.sub!(/^\s*/,'allintext:"')
     formated_query.sub!(/\s*$/,'"')
-    #formated_query += '+filetype%3Apdf'
     [ formated_query ]
   end
 
@@ -56,7 +55,7 @@ class Search < ApplicationRecord
   end
 
   def check_processing
-    puts "about to delete the search"
+    # TODO check search status before deleting
   end
 
   def queue_search
