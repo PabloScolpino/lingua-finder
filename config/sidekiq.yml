@@ -1,1 +1,1 @@
-concurrency: <%= ENV["SIDEKIQ_WORKERS"] || 1 %>
+:concurrency: <%= ENV["SIDEKIQ_WORKERS"] || 1 %>
