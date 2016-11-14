@@ -1,1 +1,9 @@
 :concurrency: <%= ENV["SIDEKIQ_WORKERS"] || 1 %>
+staging:
+  :queues:
+    - staging.default
+production:
+  :queues:
+    - production.default
+:queues:
+  - default
