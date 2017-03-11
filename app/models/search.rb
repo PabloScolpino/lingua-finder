@@ -19,7 +19,7 @@ class Search < ApplicationRecord
   end
 
   def scrape_internet
-    self.queries.map do |q|
+    queries.map do |q|
       query_google(q)
     end.flatten
   end
