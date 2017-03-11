@@ -6,6 +6,18 @@ class Search < ApplicationRecord
   after_commit :queue_search, on: :create
   before_destroy :check_processing
 
+  def self.dispatch_downloads (search_id)
+    search = Search.find(search_id)
+    search.scrape_internet.each do |link|
+      puts "Dispatching download of #{link} ..."
+      DownloaderJob.perform_later search_id: search.id, link: link
+    end
+  end
+
+  def self.download_and_process(search_id, link)
+    Search.find(search_id).process_one_page(link)
+  end
+
   def scrape_internet
     self.queries.map do |q|
       query_google(q)
@@ -30,6 +42,18 @@ class Search < ApplicationRecord
     formated_query.sub!(/^\s*/,'allintext:"')
     formated_query.sub!(/\s*$/,'"')
     [ formated_query ]
+  end
+
+  def process_one_page(link)
+    page = Page.find_or_download(link)
+
+    sentences = split_body(page.body)
+
+    sentences.each do |sentence|
+      if matched = self.pattern.match(sentence)
+        self.add_result({word: matched[:target], context: sentence, page: page})
+      end
+    end
   end
 
   private
@@ -60,5 +84,9 @@ class Search < ApplicationRecord
 
   def queue_search
     FinderJob.perform_later(search_id: self.id)
+  end
+
+  def split_body(body)
+    PragmaticSegmenter::Segmenter.new(text: body, language: self.language ).segment
   end
 end

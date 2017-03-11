@@ -7,11 +7,6 @@ class FinderJob < ApplicationJob
   end
 
   def perform(search_id:)
-    @search_id = search_id
-    search = Search.find(@search_id)
-    search.scrape_internet.each do |link|
-      puts "Dispatching download of #{link} ..."
-      DownloaderJob.perform_later search_id: search.id, link: link
-    end
+    Search.dispatch_downloads(search_id)
   end
 end
