@@ -23,7 +23,7 @@ RSpec.describe ResultsController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # Result. As you add validations to Result, be sure to
   # adjust the attributes here as well.
-  let(:search) { Search.create! ({query: 'mientras que <?>'}) }
+  let(:search) { create(:search) }
   let(:page) { Page.create! ({link: 'http://bla-bla.foo.com', body: 'mientras que <?>'}) }
 
   let(:valid_attributes) {

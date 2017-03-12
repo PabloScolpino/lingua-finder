@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     get 'results/:word/:id', to: 'results#show', as: :result
   end
 
+  get 'about_us', to: 'about_us#index', as: :about_us
+
   if Rails.env.development?
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
