@@ -2,22 +2,28 @@ require 'rails_helper'
 
 RSpec.describe FinderJob, type: :job, vcr: {} do
 
-  let(:search) {Search.create( query: 'durante la <?>', country_code: 'AR')}
-  let(:queue_name) { "#{Rails.env}.default" }
+  describe '#perform' do
+    let(:search) { create(:search) }
+    let(:queue_name) { "#{Rails.env}.default" }
 
-  it 'gets queued properly' do
-    assert_performed_with(
-      job: FinderJob,
-      args: [{search_id: search.id}],
-      queue: queue_name
-    ) do
-      FinderJob.perform_later search_id: search.id
+    it 'gets queued properly' do
+      quietly do
+        assert_performed_with(
+          job: FinderJob,
+          args: [{search_id: search.id}],
+          queue: queue_name
+        ) do
+          FinderJob.perform_later search_id: search.id
+        end
+      end
     end
-  end
 
-  it 'gets queued by new search' do
-    expect { search }
-      .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
+    it 'gets queued by new search' do
+      quietly do
+        expect { search }
+          .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
+      end
+    end
   end
 
   after do

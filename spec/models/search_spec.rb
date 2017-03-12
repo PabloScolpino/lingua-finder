@@ -77,7 +77,9 @@ RSpec.describe Search, type: :model, vcr: {} do
     subject { create(:search) }
 
     before do
-      Search.dispatch_downloads (subject.id)
+      quietly do
+        Search.dispatch_downloads (subject.id)
+      end
     end
 
     it 'queues download jobs' do
