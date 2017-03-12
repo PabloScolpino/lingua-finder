@@ -6,5 +6,5 @@
     h3 Para poder utilizar este sistema
     h3 debe estar registrado y logueado
 
-  .row
-    = link_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path
+  .row.sign_in
+    = link_to "Ingresar con Google", user_google_oauth2_omniauth_authorize_path, class: 'login-btn google'
