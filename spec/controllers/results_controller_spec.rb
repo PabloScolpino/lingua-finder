@@ -20,37 +20,31 @@ require 'rails_helper'
 
 RSpec.describe ResultsController, type: :controller do
 
-  # This should return the minimal set of attributes required to create a valid
-  # Result. As you add validations to Result, be sure to
-  # adjust the attributes here as well.
   let(:search) { create(:search) }
-  let(:page) { Page.create! ({link: 'http://bla-bla.foo.com', body: 'mientras que <?>'}) }
+  let(:page) { create(:page) }
 
   let(:valid_attributes) {
-    #{ word: 'la' , context: 'mientras que la luna brillaba', page: page, search: search }
-    skip 'Fix this bloddy test'
+    { word: 'la' , context: 'mientras que la luna brillaba', page: page, search: search }
   }
 
   let(:invalid_attributes) {
-    #{ not_word: 'bla' , not_context: 'porque bla' }
-    skip 'Fix this bloddy test'
+    { not_word: 'bla' , not_context: 'porque bla' }
   }
 
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # ResultsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "assigns all results as @results" do
+    it "brings a list of all results" do
+      skip 'WIP'
       result = Result.create! valid_attributes
-      get :index, params: { search_id: search.id, id: result.id}, session: valid_session
+      get search_results_url, params: { search_id: search.id, word: result.word }, session: valid_session
       expect(assigns(:results)).to eq([result])
     end
   end
 
   describe "GET #show" do
     it "assigns the requested result as @result" do
+      skip 'WIP'
       result = Result.create! valid_attributes
       get :show, params: {id: result.to_param}, session: valid_session
       expect(assigns(:result)).to eq(result)

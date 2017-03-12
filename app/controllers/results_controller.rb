@@ -19,7 +19,7 @@ class ResultsController < ApplicationController
   end
 
   def set_search
-    @search = @user.searches.find(params[:id])
+    @search = @user.searches.find(params[:search_id])
   end
 
   def set_results
