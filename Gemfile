@@ -30,6 +30,10 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# User login
+gem 'devise'
+gem 'omniauth-google-oauth2'
+
 # deployment config
 gem 'foreman'
 
@@ -65,7 +69,7 @@ group :development, :test do
   gem 'fuubar'
   gem 'webmock'
   gem 'vcr'
-  gem "factory_girl_rails", "~> 4.0"
+  gem 'factory_girl_rails', '~> 4.0'
 end
 
 group :development do
