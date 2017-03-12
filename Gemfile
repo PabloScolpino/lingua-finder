@@ -70,6 +70,7 @@ group :development, :test do
   gem 'webmock'
   gem 'vcr'
   gem 'factory_girl_rails', '~> 4.0'
+  gem 'faker'
 end
 
 group :development do
