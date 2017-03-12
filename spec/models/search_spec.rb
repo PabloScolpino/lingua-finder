@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Search, type: :model do
+RSpec.describe Search, type: :model, vcr: {} do
   include ActiveJob::TestHelper
 
+  context 'query pattern processing' do
 
-  describe 'query pattern processing' do
+    context 'string plus target' do
+      subject { create(:search) }
 
-    describe 'string plus target' do
-      subject {Search.create(query: 'durante la <?>')}
       let(:regex) {subject.pattern}
       let(:queries) {subject.queries}
 
@@ -23,7 +23,7 @@ RSpec.describe Search, type: :model do
       end
     end
 
-    describe 'category plus target' do
+    context 'category plus target' do
       before do
         c = Category.create(name: 'article')
         Word.create(phrase: 'la', category: c)
@@ -31,7 +31,7 @@ RSpec.describe Search, type: :model do
         Word.create(phrase: 'lo', category: c)
       end
 
-      subject {Search.create(query: 'durante <:article:> <?>')}
+      subject { create(:search, query: 'durante <:article:> <?>') }
 
       let(:regex) {subject.pattern}
       let(:queries) {subject.queries}
@@ -51,10 +51,12 @@ RSpec.describe Search, type: :model do
     end
   end
 
-  describe 'Search result recording' do
-    subject {Search.create(query: 'durante la <?>')}
+  describe '#add_result' do
+    subject { create(:search) }
+
     let(:word) { 'conflicto' }
     let(:context) { 'Durante el conflicto belico en Europa.' }
+
     let(:page) {
       Page.create(
         link: 'http://wikipedia.com/bla.htm',
@@ -62,11 +64,40 @@ RSpec.describe Search, type: :model do
       )
     }
 
-    it 'can record all the entires on the db' do
+    before do
       subject.add_result({word: word, context: context, page: page})
+    end
+
+    it 'can record all the entires on the db' do
+      expect(subject.results).not_to be_empty
     end
   end
 
+  describe '.dispatch_downloads' do
+    subject { create(:search) }
+
+    before do
+      quietly do
+        Search.dispatch_downloads (subject.id)
+      end
+    end
+
+    it 'queues download jobs' do
+      have_enqueued_job(DownloaderJob)
+    end
+  end
+
+  describe '#scrape_internet' do
+    subject { create(:search) }
+
+    before do
+      @results = subject.scrape_internet
+    end
+
+    it 'gets internet results' do
+      expect(@results).not_to be_empty
+    end
+  end
 
   after do
     clear_enqueued_jobs

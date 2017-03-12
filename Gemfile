@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.3.3'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -65,6 +65,7 @@ group :development, :test do
   gem 'fuubar'
   gem 'webmock'
   gem 'vcr'
+  gem "factory_girl_rails", "~> 4.0"
 end
 
 group :development do

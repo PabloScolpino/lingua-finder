@@ -10,7 +10,6 @@ class Page < ApplicationRecord
   private
 
   def self.download(link)
-    puts "About to download the page at #{link}"
     #todo handle requests errors
     #response = HTTParty.get(link, {timeout: timeout})
     begin
