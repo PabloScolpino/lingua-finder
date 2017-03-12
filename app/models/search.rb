@@ -1,4 +1,5 @@
 class Search < ApplicationRecord
+  belongs_to :user
   has_many :results, dependent: :destroy
 
   validates :query, presence: true

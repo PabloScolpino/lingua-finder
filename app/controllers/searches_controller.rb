@@ -1,23 +1,19 @@
 class SearchesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_user
   before_action :set_search, only: [:show, :destroy]
   before_action :set_searches, only: [:index, :create]
 
-  # GET /searches
-  # GET /searches.json
   def index
     @search = Search.new
   end
 
-  # GET /searches/1
-  # GET /searches/1.json
   def show
     @results =  @search.results.group(:word).count
   end
 
-  # POST /searches
-  # POST /searches.json
   def create
-    @search = Search.new(search_params)
+    @search = @user.searches.create(search_params)
 
     respond_to do |format|
       if @search.save
@@ -30,8 +26,6 @@ class SearchesController < ApplicationController
     end
   end
 
-  # DELETE /searches/1
-  # DELETE /searches/1.json
   def destroy
     @search.destroy
     respond_to do |format|
@@ -41,13 +35,16 @@ class SearchesController < ApplicationController
   end
 
   private
+    def set_user
+      @user = User.find(current_user.id)
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_search
-      @search = Search.find(params[:id])
+      @search = @user.searches.find(params[:id])
     end
 
     def set_searches
-      @searches = Search.all
+      @searches = @user.searches
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
