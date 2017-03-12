@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161108013128) do
+ActiveRecord::Schema.define(version: 20170312122454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,12 +45,20 @@ ActiveRecord::Schema.define(version: 20161108013128) do
     t.datetime "updated_at",   null: false
     t.string   "status"
     t.string   "country_code"
+    t.integer  "user_id"
+    t.index ["user_id"], name: "index_searches_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
     t.string   "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "sign_in_count",      default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet     "current_sign_in_ip"
+    t.inet     "last_sign_in_ip"
+    t.string   "name"
   end
 
   create_table "words", force: :cascade do |t|
@@ -62,5 +70,6 @@ ActiveRecord::Schema.define(version: 20161108013128) do
   end
 
   add_foreign_key "results", "pages"
+  add_foreign_key "searches", "users"
   add_foreign_key "words", "categories"
 end

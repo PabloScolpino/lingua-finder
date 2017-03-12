@@ -9,6 +9,10 @@
         li class=(:active if current_page? new_search_path())
           = link_to 'Quienes Somos', new_search_path()
 
+        - if user_signed_in?
+          li
+            = link_to 'Cerrar Sesion', destroy_user_session_path()
+
       a.button-collapse data-activates='mobile-demo' href='#'
         i.material-icons menu
       ul#mobile-demo.side-nav
@@ -16,3 +20,6 @@
           = link_to 'Buscar', searches_path()
         li class=(:active if current_page? new_search_path())
           = link_to 'Quienes Somos', new_search_path()
+        - if user_signed_in?
+          li
+            = link_to 'Cerrar Sesion', destroy_user_session_path()

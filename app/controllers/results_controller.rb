@@ -1,4 +1,6 @@
 class ResultsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_user
   before_action :set_search
   before_action :set_results
   before_action :set_alternatives
@@ -12,8 +14,12 @@ class ResultsController < ApplicationController
 
   private
 
+  def set_user
+    @user = User.find(current_user.id)
+  end
+
   def set_search
-    @search = Search.find(params[:search_id])
+    @search = @user.searches.find(params[:id])
   end
 
   def set_results

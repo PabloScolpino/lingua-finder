@@ -1,0 +1,10 @@
+.container
+  .row
+    h1 Bienvenido al Lingua Finder
+
+  .row
+    h3 Para poder utilizar este sistema
+    h3 debe estar registrado y logueado
+
+  .row.sign_in
+    = link_to "Ingresar con Google", user_google_oauth2_omniauth_authorize_path, class: 'login-btn google'
