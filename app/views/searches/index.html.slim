@@ -10,6 +10,7 @@
         thead
           tr
             th.data-field Criterio de busqueda
+            th.data-field Codigo Pais
             th.data-field Resultados
             th.data-field colspan="4"
 
@@ -17,6 +18,7 @@
           - @searches.each do |search|
             tr
               td = search.query
+              td = search.country_code
               td = search.results.count
               td = link_to 'Ver', search, class: 'btn indigo'
               td = link_to 'Borrar', search, method: :delete, data: { confirm: 'Esta segur@?' }, class: 'btn red black-text'
