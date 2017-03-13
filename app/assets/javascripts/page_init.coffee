@@ -8,10 +8,10 @@ set_bkgnd = ->
   t = new Trianglify({
     width: $(document).width(),
     height: $(document).height(),
-    cell_size: 30,
-    variance: 0.6,
+    cell_size: 50,
+    variance: 1.6,
     seed: 'mimamamemima',
-    x_colors: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"]
+    x_colors: ["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6" ]
   })
   canvas = t.canvas()
   $('body').before(canvas)
