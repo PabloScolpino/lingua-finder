@@ -23,4 +23,7 @@
             td.left-align = result.context.split(result.word).second
 
   .row
+    = link_to 'Descarga', search_results_path(search_id: @search.id, word: params[:word], format: :csv), { class: 'btn', download: "#{@search.filename}_#{params[:word]}"}
+
+  .row
     = link_to 'Atras', search_path(@search.id), class: 'btn'

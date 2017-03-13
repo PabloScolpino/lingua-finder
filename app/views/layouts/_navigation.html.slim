@@ -3,23 +3,35 @@
     .nav-wrapper.z-depth-4
       = link_to 'Lingua finder', root_path(), class: 'brand-logo'
       ul.right.hide-on-med-and-down
-        li class=(:active if current_page? searches_path())
-          = link_to 'Buscar', searches_path()
+        li
+          = link_to 'https://github.com/PabloScolpino/LinguaFinder/wiki', target: :_blank
+            | Documentacion
 
-        li class=(:active if current_page? new_search_path())
-          = link_to 'Quienes Somos', new_search_path()
+        li
+          = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
+            | Ver codigo en GitHub
+
+        li class=(:active if current_page? about_us_path())
+          = link_to 'Quienes Somos', about_us_path()
 
         - if user_signed_in?
           li
-            = link_to 'Cerrar Sesion', destroy_user_session_path()
+            = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
 
       a.button-collapse data-activates='mobile-demo' href='#'
         i.material-icons menu
       ul#mobile-demo.side-nav
-        li class=(:active if current_page? searches_path())
-          = link_to 'Buscar', searches_path()
-        li class=(:active if current_page? new_search_path())
-          = link_to 'Quienes Somos', new_search_path()
+        li
+          = link_to 'https://github.com/PabloScolpino/LinguaFinder/wiki', target: :_blank
+            | Documentacion
+
+        li
+          = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
+            | Ver codigo en GitHub
+
+        li class=(:active if current_page? about_us_path())
+          = link_to 'Quienes Somos', about_us_path()
+
         - if user_signed_in?
           li
-            = link_to 'Cerrar Sesion', destroy_user_session_path()
+            = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
