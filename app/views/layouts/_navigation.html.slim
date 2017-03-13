@@ -11,8 +11,8 @@
           = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
             | Ver codigo en GitHub
 
-        li class=(:active if current_page? new_search_path())
-          = link_to 'Quienes Somos', new_search_path()
+        li class=(:active if current_page? about_us_path())
+          = link_to 'Quienes Somos', about_us_path()
 
         - if user_signed_in?
           li
@@ -29,8 +29,8 @@
           = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
             | Ver codigo en GitHub
 
-        li class=(:active if current_page? new_search_path())
-          = link_to 'Quienes Somos', new_search_path()
+        li class=(:active if current_page? about_us_path())
+          = link_to 'Quienes Somos', about_us_path()
 
         - if user_signed_in?
           li
