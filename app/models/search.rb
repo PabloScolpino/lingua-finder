@@ -57,6 +57,13 @@ class Search < ApplicationRecord
     end
   end
 
+  def filename
+    return query.strip do |q|
+      q.gsub!(/^.*(\\|\/)/, '')
+      q.gsub!(/[^0-9A-Za-z.\-]/, '_')
+    end
+  end
+
   private
 
   def query_google(q)
