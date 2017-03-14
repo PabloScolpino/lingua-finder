@@ -169,6 +169,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
+    oj (2.12.14)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
@@ -230,6 +231,8 @@ GEM
     redis (3.3.3)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
+    rollbar (2.14.0)
+      multi_json
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -306,6 +309,7 @@ GEM
     tins (1.13.2)
     treetop (1.6.8)
       polyglot (~> 0.3)
+    tunemygc (1.0.69)
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.0)
@@ -353,12 +357,14 @@ DEPENDENCIES
   listen (~> 3.0.5)
   material_icons
   materialize-sass
+  oj (~> 2.12.14)
   omniauth-google-oauth2
   pg
   pragmatic_segmenter
   puma (~> 3.0)
   rails (~> 5.0.0, >= 5.0.0.1)
   rails-controller-testing
+  rollbar
   rspec-rails
   sass-rails (~> 5.0)
   sidekiq
@@ -367,6 +373,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   treetop
+  tunemygc
   turbolinks (~> 5)
   tzinfo-data
   uglifier (>= 1.3.0)
