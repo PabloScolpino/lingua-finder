@@ -7,7 +7,7 @@ class Page < ApplicationRecord
         p.body = download(link)
       end
     rescue ActiveRecord::StatementInvalid
-      raise PageError, "Encoding problems when processing page #{link}"
+      raise PageError, "Unable to store page"
     end
   end
 
@@ -18,9 +18,14 @@ class Page < ApplicationRecord
     #response = HTTParty.get(link, {timeout: timeout})
     begin
       response = HTTParty.get(link, headers: {"User-Agent" => USER_AGENT})
-      strip_body(response.body)
-    rescue Errno::ECONNREFUSED, Net::OpenTimeout, Net::ReadTimeout, SocketError
+    rescue
       raise PageError, 'Unable to retrieve page'
+    end
+
+    begin
+      strip_body(response.body)
+    rescue
+      raise PageError, 'Unable to parse page'
     end
   end
 
