@@ -1,0 +1,2 @@
+class PageError < StandardError
+end
