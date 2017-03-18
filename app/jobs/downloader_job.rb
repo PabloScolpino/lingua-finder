@@ -1,9 +1,6 @@
 class DownloaderJob < ApplicationJob
-  rescue_from(ActiveRecord::StatementInvalid) do |exception|
-    puts '-------------------------------------------------------------'
-    puts exception.inspect
-    puts self.inspect
-    puts '-------------------------------------------------------------'
+  rescue_from(ActiveRecord::RecordNotFound) do |exception|
+    puts "DownloaderJob failed to find Search id=#{arguments[0]}"
   end
 
   def perform(search_id:, link:)
