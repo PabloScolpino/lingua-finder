@@ -61,9 +61,10 @@ gem 'httparty'
 gem 'pragmatic_segmenter'
 gem 'treetop'
 
-group :production do
+group :production, :staging do
   # Garbage collection tuning
   gem 'tunemygc'
+  gem 'lograge'
 end
 
 group :test do
