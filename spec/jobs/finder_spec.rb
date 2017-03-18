@@ -6,23 +6,19 @@ RSpec.describe FinderJob, type: :job, vcr: {} do
     let(:search) { create(:search) }
     let(:queue_name) { "#{Rails.env}.default" }
 
-    it 'gets queued properly' do
-      quietly do
-        assert_performed_with(
-          job: FinderJob,
-          args: [{search_id: search.id}],
-          queue: queue_name
-        ) do
-          FinderJob.perform_later search_id: search.id
-        end
+    it 'queues download jobs' do
+      assert_performed_with(
+        job: FinderJob,
+        args: [{search_id: search.id}],
+        queue: queue_name
+      ) do
+        FinderJob.perform_later search_id: search.id
       end
     end
 
     it 'gets queued by new search' do
-      quietly do
-        expect { search }
-          .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
-      end
+      expect { search }
+        .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
     end
   end
 

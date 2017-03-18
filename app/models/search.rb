@@ -10,7 +10,6 @@ class Search < ApplicationRecord
   def self.dispatch_downloads (search_id)
     search = Search.find(search_id)
     search.scrape_internet.each do |link|
-      puts "Dispatching download of #{link} ..."
       DownloaderJob.perform_later search_id: search.id, link: link
     end
   end
@@ -46,14 +45,17 @@ class Search < ApplicationRecord
   end
 
   def process_one_page(link)
-    page = Page.find_or_download(link)
+    begin
+      page = Page.find_or_download(link)
 
-    sentences = split_body(page.body)
+      sentences = split_body(page.body)
 
-    sentences.each do |sentence|
-      if matched = self.pattern.match(sentence)
-        self.add_result({word: matched[:target], context: sentence, page: page})
+      sentences.each do |sentence|
+        if matched = self.pattern.match(sentence)
+          self.add_result({word: matched[:target], context: sentence, page: page})
+        end
       end
+    rescue PageError
     end
   end
 
@@ -73,7 +75,7 @@ class Search < ApplicationRecord
     response = GoogleCustomSearchApi.search_and_return_all_results(q, options)
     # todo handle api error
     response.each do |page|
-      r << page['items'].map { |item| item['link'] }
+      r << page['items'].map { |item| URI.escape(item['link']) }
     end
     r
   end

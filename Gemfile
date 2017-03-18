@@ -9,9 +9,6 @@ gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 
-# Garbage collection tuning
-gem 'tunemygc'
-
 # Error monitoring
 gem 'rollbar'
 gem 'oj', '~> 2.12.14'
@@ -64,6 +61,11 @@ gem 'httparty'
 gem 'pragmatic_segmenter'
 gem 'treetop'
 
+group :production, :staging do
+  # Garbage collection tuning
+  gem 'tunemygc'
+  gem 'lograge'
+end
 
 group :test do
   gem 'database_cleaner'

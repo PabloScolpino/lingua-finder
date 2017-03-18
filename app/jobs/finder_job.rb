@@ -1,9 +1,6 @@
 class FinderJob < ApplicationJob
   rescue_from(ActiveRecord::RecordNotFound) do |exception|
-    puts '-------------------------------------------------------------'
-    puts exception.inspect
-    puts @search_id
-    puts '-------------------------------------------------------------'
+    puts "FinderJob Failed to find Serarch id=#{arguments[0]}"
   end
 
   def perform(search_id:)
