@@ -38,10 +38,7 @@ class Search < ApplicationRecord
   end
 
   def queries
-    formated_query = query.gsub('<?>','')
-    formated_query.sub!(/^\s*/,'allintext:"')
-    formated_query.sub!(/\s*$/,'"')
-    [ formated_query ]
+    Parser.parse(query).strings
   end
 
   def process_one_page(link)
