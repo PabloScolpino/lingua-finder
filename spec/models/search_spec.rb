@@ -78,9 +78,13 @@ RSpec.describe Search, type: :model, vcr: {} do
     context 'string plus target' do
       subject { create(:search) }
 
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+la[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
       it 'can generate a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
-        expect(subject.pattern).to eq(Regexp.new('durante la (?<target>[[:alpha:]]+)'))
+        expect(subject.pattern).to eq(expected_regex)
       end
     end
 
@@ -91,10 +95,13 @@ RSpec.describe Search, type: :model, vcr: {} do
 
       subject { create(:search, query: 'durante <:article:> <?>') }
 
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(la|el|lo)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
       it 'generates a regex' do
-        pending 'TODO'
         expect(subject.pattern).to be_an_instance_of(Regexp)
-        expect(subject.pattern).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
+        expect(subject.pattern).to eq(expected_regex)
       end
     end
 
@@ -106,10 +113,13 @@ RSpec.describe Search, type: :model, vcr: {} do
 
       subject { create(:search, query: '<:article:> <:name:> <?>') }
 
+      let(:expected_regex) do
+        Regexp.new('(la|el)[[:space:]]+(casa|auto)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
       it 'generates a regex' do
-        pending 'TODO'
         expect(subject.pattern).to be_an_instance_of(Regexp)
-        expect(subject.pattern).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
+        expect(subject.pattern).to eq(expected_regex)
       end
     end
 
@@ -120,10 +130,13 @@ RSpec.describe Search, type: :model, vcr: {} do
 
       subject { create(:search, query: '<:article:> <?>') }
 
-      it 'generates a empty pattern' do
-        pending 'TODO'
+      let(:expected_regex) do
+        Regexp.new('(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a target only pattern' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
-        expect(subject.pattern).to eq(Regexp.new(''))
+        expect(subject.pattern).to eq(expected_regex)
       end
     end
   end

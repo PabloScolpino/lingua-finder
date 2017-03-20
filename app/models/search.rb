@@ -29,8 +29,7 @@ class Search < ApplicationRecord
   end
 
   def pattern
-    formated_query = query.gsub('<?>','(?<target>[[:alpha:]]+)')
-    Regexp.new(formated_query)
+    Parser.parse(query).pattern
   end
 
   def language
