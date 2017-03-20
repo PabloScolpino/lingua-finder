@@ -92,7 +92,7 @@ RSpec.describe Search, type: :model, vcr: {} do
       subject { create(:search, query: 'durante <:article:> <?>') }
 
       it 'generates a regex' do
-        pending #TODO
+        pending 'TODO'
         expect(subject.pattern).to be_an_instance_of(Regexp)
         expect(subject.pattern).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
       end
@@ -107,9 +107,9 @@ RSpec.describe Search, type: :model, vcr: {} do
       subject { create(:search, query: '<:article:> <:name:> <?>') }
 
       it 'generates a regex' do
-        pending #TODO
-        expect(regex).to be_an_instance_of(Regexp)
-        expect(regex).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
+        pending 'TODO'
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
       end
     end
 
@@ -118,10 +118,12 @@ RSpec.describe Search, type: :model, vcr: {} do
         create(:article_with_words, words: [])
       end
 
-      subject { create(:search, query: 'durante <:article:> <?>') }
+      subject { create(:search, query: '<:article:> <?>') }
 
       it 'generates a empty pattern' do
-        pending # TODO
+        pending 'TODO'
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(Regexp.new(''))
       end
     end
   end
