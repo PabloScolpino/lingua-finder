@@ -3,50 +3,276 @@ require 'rails_helper'
 RSpec.describe Search, type: :model, vcr: {} do
   include ActiveJob::TestHelper
 
-  context 'query pattern processing' do
+  describe '#queries' do
 
-    context 'string plus target' do
-      subject { create(:search) }
+    context 'invalid query' do
+      subject { create(:search, query: 'durante') }
 
-      let(:regex) {subject.pattern}
-      let(:queries) {subject.queries}
-
-      it { should_not be_nil }
-
-      it 'can generate a valid regex' do
-        expect(regex).to be_an_instance_of(Regexp)
-        expect(regex).to eq(Regexp.new('durante la (?<target>[[:alpha:]]+)'))
-      end
-
-      it 'can generate a valid list of queries' do
-        expect(queries).to match_array(['allintext:"durante la"'])
+      it 'raises error' do
+        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
 
-    context 'category plus target' do
+    context 'invalid query 2' do
+      subject { create(:search, query: '<?>') }
+
+      it 'raises error' do
+        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'string plus target' do
+      subject { create(:search) }
+      let(:expected_queries) do
+        [
+          'allintext:"durante la"'
+        ]
+      end
+
+      it 'can generate a list of queries' do
+        expect(subject.queries).to match_array(expected_queries)
+      end
+    end
+
+    context 'with category' do
       before do
-        c = Category.create(name: 'article')
-        Word.create(phrase: 'la', category: c)
-        Word.create(phrase: 'el', category: c)
-        Word.create(phrase: 'lo', category: c)
+        create(:article_with_words, words: ['la','el','lo'])
       end
 
       subject { create(:search, query: 'durante <:article:> <?>') }
 
-      let(:regex) {subject.pattern}
-      let(:queries) {subject.queries}
-
-      it { should_not be_nil }
-
-      it 'can generate a valid regex' do
-        pending #TODO
-        expect(regex).to be_an_instance_of(Regexp)
-        expect(regex).to eq(Regexp.new('durante (la|el|lo) ([[:alpha:]]+)'))
+      let(:expected_queries) do
+        [
+          'allintext:"durante la"',
+          'allintext:"durante el"',
+          'allintext:"durante lo"'
+        ]
       end
 
-      it 'can generate a valid list of queries' do
-        pending #TODO
-        expect(queries).to match_array(['allintext:"durante la"', 'allintext:"durante el"', 'allintext:"durante lo"'])
+      it 'generates a list of queries' do
+        expect(subject.queries).to match_array(expected_queries)
+      end
+    end
+
+    context 'with multiple categories' do
+      before do
+        create(:article_with_words, words: ['la','el'])
+        create(:name_with_words, words: ['casa','auto'])
+      end
+
+      subject { create(:search, query: '<:article:> <:name:> <?>') }
+
+      let(:expected_queries) do
+        [
+          'allintext:"la casa"',
+          'allintext:"la auto"',
+          'allintext:"el casa"',
+          'allintext:"el auto"',
+        ]
+      end
+
+      it 'generates a list of queries' do
+        expect(subject.queries).to match_array(expected_queries)
+      end
+    end
+
+    context 'with empty category' do
+      before do
+        create(:article_with_words, words: [])
+      end
+
+      subject { create(:search, query: 'durante <:article:> <?>') }
+
+      it 'generates a empty list' do
+        expect(subject.queries).to match_array([])
+      end
+    end
+
+    context 'with category and filter' do
+      before do
+        create(:article_with_words)
+      end
+
+      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
+
+      let(:expected_queries) do
+        [
+          'allintext:"durante la"',
+        ]
+      end
+
+      it 'generates a list of queries' do
+        expect(subject.queries).to match_array(expected_queries)
+      end
+    end
+  end
+
+  describe '#pattern' do
+
+    context 'string plus target' do
+      subject { create(:search) }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+la[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
+      it 'can generate a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with category' do
+      before do
+        create(:article_with_words, words: ['la','el','lo'])
+      end
+
+      subject { create(:search, query: 'durante <:article:> <?>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(la|el|lo)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with multiple categories' do
+      before do
+        create(:article_with_words, words: ['la','el'])
+        create(:name_with_words, words: ['casa','auto'])
+      end
+
+      subject { create(:search, query: '<:article:> <:name:> <?>') }
+
+      let(:expected_regex) do
+        Regexp.new('(la|el)[[:space:]]+(casa|auto)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with empty category' do
+      before do
+        create(:article_with_words, words: [])
+      end
+
+      subject { create(:search, query: '<:article:> <?>') }
+
+      let(:expected_regex) do
+        Regexp.new('(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a target only pattern' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+    context 'with category and filter' do
+      before do
+        create(:article_with_words)
+      end
+
+      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(la)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a  pattern' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with category in target' do
+      before do
+        create(:article_with_words, words: ['la','el','lo'])
+      end
+
+      subject { create(:search, query: 'durante <?:article:>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>(la|el|lo))([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with regex in target' do
+      subject { create(:search, query: 'durante <?/.*a/>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>.*a)([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with regex in target 2' do
+      subject { create(:search, query: 'durante <?/.*ncho/>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>.*ncho)([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with regex in target 3' do
+      subject { create(:search, query: 'durante <?/.*nga/>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>.*nga)([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with regex in target 4' do
+      subject { create(:search, query: 'durante <?/\Sa/>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>\Sa)([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+
+    context 'with category and regex in target' do
+      before do
+        create(:article_with_words, words: ['la','el','lo','las'])
+      end
+
+      subject { create(:search, query: 'durante <?:article:/.*a.*/>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(?<target>(la|las))([[:space:]]|[[:punct:]])+')
+      end
+
+      it 'generates a regex' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
       end
     end
   end

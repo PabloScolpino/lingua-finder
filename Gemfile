@@ -12,6 +12,7 @@ gem 'puma', '~> 3.0'
 # Error monitoring
 gem 'rollbar'
 gem 'oj', '~> 2.12.14'
+gem 'lograge'
 
 # Use SCSS for stylesheets
 # Use Uglifier as compressor for JavaScript assets
@@ -64,7 +65,6 @@ gem 'treetop'
 group :production, :staging do
   # Garbage collection tuning
   gem 'tunemygc'
-  gem 'lograge'
 end
 
 group :test do

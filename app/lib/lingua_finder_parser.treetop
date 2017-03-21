@@ -1,0 +1,37 @@
+grammar LinguaFinder
+  rule query
+    (string / expression / space)* <QueryNode>
+  end
+
+  rule string
+    [[:word:]]+ <StringNode>
+  end
+
+  rule expression
+    '<' (category / distance / target) '>' <ExpressionNode>
+  end
+
+  rule distance
+    [1-9] <DistanceNode>
+  end
+
+  rule regex
+    '/' [\.\*\+\^\$\(\)\|\[\]\-\\a-zA-Z]+ '/' <RegexNode>
+  end
+
+  rule category
+     ':' category_name ':' regex? <CategoryNode>
+  end
+
+  rule category_name
+    [[:alnum:]]+ <CategoryNameNode>
+  end
+
+  rule target
+    '?' category? regex? <TargetNode>
+  end
+
+  rule space
+    [[:space:]]+
+  end
+end

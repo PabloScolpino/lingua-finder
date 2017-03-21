@@ -4,6 +4,8 @@ class Search < ApplicationRecord
 
   validates :query, presence: true
 
+  validate :query_must_follow_grammar
+
   after_commit :queue_search, on: :create
   before_destroy :check_processing
 
@@ -29,8 +31,7 @@ class Search < ApplicationRecord
   end
 
   def pattern
-    formated_query = query.gsub('<?>','(?<target>[[:alpha:]]+)')
-    Regexp.new(formated_query)
+    parsed_query.pattern
   end
 
   def language
@@ -38,10 +39,7 @@ class Search < ApplicationRecord
   end
 
   def queries
-    formated_query = query.gsub('<?>','')
-    formated_query.sub!(/^\s*/,'allintext:"')
-    formated_query.sub!(/\s*$/,'"')
-    [ formated_query ]
+    parsed_query.strings
   end
 
   def process_one_page(link)
@@ -92,11 +90,23 @@ class Search < ApplicationRecord
     # TODO check search status before deleting
   end
 
+  def parsed_query
+    @parsed ||= Parser.parse(query)
+  end
+
   def queue_search
     FinderJob.perform_later(search_id: self.id)
   end
 
   def split_body(body)
     PragmaticSegmenter::Segmenter.new(text: body, language: self.language ).segment
+  end
+
+  def query_must_follow_grammar
+    begin
+      errors.add(:invalid_query, 'The query is invalid') unless parsed_query.valid?
+    rescue
+      errors.add(:error_parsing_query, 'There was an error parsing the query')
+    end
   end
 end
