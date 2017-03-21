@@ -16,7 +16,7 @@ grammar LinguaFinder
   end
 
   rule regex
-    '/' [\.\*\^\$\(\)\|\[\]\-a-zA-Z]+ '/' <RegexNode>
+    '/' [\.\*\+\^\$\(\)\|\[\]\-\\a-zA-Z]+ '/' <RegexNode>
   end
 
   rule category
