@@ -5,6 +5,22 @@ RSpec.describe Search, type: :model, vcr: {} do
 
   describe '#queries' do
 
+    context 'invalid query' do
+      subject { create(:search, query: 'durante') }
+
+      it 'raises error' do
+        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'invalid query 2' do
+      subject { create(:search, query: '<?>') }
+
+      it 'raises error' do
+        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
     context 'string plus target' do
       subject { create(:search) }
       let(:expected_queries) do
@@ -71,6 +87,24 @@ RSpec.describe Search, type: :model, vcr: {} do
         expect(subject.queries).to match_array([])
       end
     end
+
+    context 'with category and filter' do
+      before do
+        create(:article_with_words)
+      end
+
+      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
+
+      let(:expected_queries) do
+        [
+          'allintext:"durante la"',
+        ]
+      end
+
+      it 'generates a list of queries' do
+        expect(subject.queries).to match_array(expected_queries)
+      end
+    end
   end
 
   describe '#pattern' do
@@ -135,6 +169,22 @@ RSpec.describe Search, type: :model, vcr: {} do
       end
 
       it 'generates a target only pattern' do
+        expect(subject.pattern).to be_an_instance_of(Regexp)
+        expect(subject.pattern).to eq(expected_regex)
+      end
+    end
+    context 'with category and filter' do
+      before do
+        create(:article_with_words)
+      end
+
+      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
+
+      let(:expected_regex) do
+        Regexp.new('durante[[:space:]]+(la)[[:space:]]+(?<target>[[:alpha:]]+)')
+      end
+
+      it 'generates a  pattern' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
         expect(subject.pattern).to eq(expected_regex)
       end
