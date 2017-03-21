@@ -131,7 +131,13 @@ module LinguaFinder
     end
 
     def pattern
-      '(?<target>[[:alpha:]]+)'
+      p = '(?<target>'
+      if elements.size > 0
+        p = p + elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
+      else
+        p = p + '[[:alpha:]]+)'
+      end
+      p
     end
   end
 
