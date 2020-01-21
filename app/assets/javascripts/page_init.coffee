@@ -1,8 +1,8 @@
 navbar_init = ->
-  $('.button-collapse').sideNav()
+  $('.sidenav').sidenav()
 
 select_init = ->
-  $('select').material_select()
+  $('select').formSelect()
 
 set_bkgnd = ->
   t = new Trianglify({
@@ -13,7 +13,14 @@ set_bkgnd = ->
     seed: 'mimamamemima',
     x_colors: ["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6" ]
   })
-  canvas = t.canvas()
+
+  background = document.getElementById('background')
+  if background
+    canvas = t.canvas(background)
+  else
+    canvas = t.canvas()
+    canvas.setAttribute('id','background')
+
   $('body').before(canvas)
 
 page_ready = ->
@@ -21,7 +28,7 @@ page_ready = ->
   select_init()
 
 site_ready = ->
-  console.log('site ready')
+  # console.log('site ready')
   set_bkgnd()
 
 $(document).on('turbolinks:load', page_ready)
