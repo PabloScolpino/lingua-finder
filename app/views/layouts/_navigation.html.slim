@@ -18,20 +18,20 @@
           li
             = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
 
-      a.button-collapse data-activates='mobile-demo' href='#'
-        i.material-icons menu
-      ul#mobile-demo.side-nav
-        li
-          = link_to 'https://github.com/PabloScolpino/LinguaFinder/wiki', target: :_blank
-            | Documentacion
+  ul#slide-out.sidenav
+    li
+      = link_to 'https://github.com/PabloScolpino/LinguaFinder/wiki', target: :_blank
+        | Documentacion
 
-        li
-          = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
-            | Ver codigo en GitHub
+    li
+      = link_to 'https://github.com/PabloScolpino/LinguaFinder', target: :_blank
+        | Ver codigo en GitHub
 
-        li class=(:active if current_page? about_us_path())
-          = link_to 'Quienes Somos', about_us_path()
+    li class=(:active if current_page? about_us_path())
+      = link_to 'Quienes Somos', about_us_path()
 
-        - if user_signed_in?
-          li
-            = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
+    - if user_signed_in?
+      li
+        = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
+  a.sidenav-trigger data-target='slide-out' href='#'
+    i.material-icons menu

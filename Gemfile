@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 ruby '2.3.3'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 gem 'pg'
@@ -11,7 +10,7 @@ gem 'puma', '~> 3.0'
 
 # Error monitoring
 gem 'rollbar'
-gem 'oj', '~> 2.12.14'
+gem 'oj'
 gem 'lograge'
 
 # Use SCSS for stylesheets
@@ -38,13 +37,14 @@ gem 'jbuilder', '~> 2.5'
 
 # User login
 gem 'devise'
+gem 'responders', '< 3'
 gem 'omniauth-google-oauth2'
 
 # deployment config
 gem 'foreman'
 
 # Queuing
-gem 'sidekiq'
+gem 'sidekiq', '< 6'
 
 # views
 gem 'sass-rails', '~> 5.0'
@@ -74,7 +74,7 @@ end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
+  gem 'byebug', '~> 9', platform: :mri
   gem 'rspec-rails'
   gem 'fuubar'
   gem 'webmock'
@@ -89,7 +89,7 @@ group :development do
   gem 'web-console'
   gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+  gem 'spring', '< 2.1'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'guard-rspec'
 end

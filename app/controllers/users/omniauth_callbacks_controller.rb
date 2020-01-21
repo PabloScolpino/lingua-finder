@@ -11,4 +11,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to new_user_registration_url, alert: @user.errors.full_messages.join("\n")
     end
   end
+
+  # TODO: handle the oauth error routing in config/route
+  def new_session_path(scope)
+    '/'
+  end
 end
