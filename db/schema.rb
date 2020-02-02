@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20170312122454) do
   end
 
   add_foreign_key "results", "pages"
+  add_foreign_key "results", "searches"
   add_foreign_key "searches", "users"
   add_foreign_key "words", "categories"
 end

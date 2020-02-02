@@ -20,7 +20,7 @@ services:
     env_file:
       - ./.env
     volumes:
-      - app-sync:/mnt/web
+      - app-sync:/mnt/app
 
   worker:
     build:
@@ -30,10 +30,12 @@ services:
     depends_on:
       - database
       - redis
-    env_file:
-      - ./.env
     networks:
       - linguafinder
+    env_file:
+      - ./.env
+    volumes:
+      - app-sync:/mnt/app
     command: bundle exec sidekiq -C config/sidekiq.yml
 
   database:
