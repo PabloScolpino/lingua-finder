@@ -1,7 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :search do
-    query "durante la <?>"
-    country_code  "AR"
+    query { 'durante la <?>' }
+    country_code { 'AR' }
     user
   end
 end

@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '2.3.3'
+ruby '2.4.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
+gem 'rails', '~> 5.0.0'
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
@@ -70,6 +70,7 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'rails-controller-testing'
+  gem 'fakeredis'
 end
 
 group :development, :test do
@@ -79,9 +80,12 @@ group :development, :test do
   gem 'fuubar'
   gem 'webmock'
   gem 'vcr'
-  gem 'factory_girl_rails', '~> 4.0'
+  gem 'factory_bot_rails'
   gem 'faker'
   gem 'coveralls', require: false
+  gem 'rerun'
+  gem 'awesome_print'
+  gem "ruby-prof", ">= 0.17.0", require: false
 end
 
 group :development do
@@ -92,6 +96,7 @@ group :development do
   gem 'spring', '< 2.1'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'guard-rspec'
+  gem 'pry-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
