@@ -14,5 +14,9 @@ module LinguaFinder
     config.active_job.queue_adapter = :sidekiq
     config.active_job.queue_name_prefix = Rails.env
     config.active_job.queue_name_delimiter = '.'
+
+    config.generators do |g|
+      g.orm :active_record
+    end
   end
 end

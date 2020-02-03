@@ -9,25 +9,26 @@ class Search < ApplicationRecord
   after_commit :queue_search, on: :create
   before_destroy :check_processing
 
-  def self.dispatch_downloads (search_id)
-    search = Search.find(search_id)
-    search.scrape_internet.each do |link|
-      DownloaderJob.perform_later search_id: search.id, link: link
+  # Query google and then queue each link for further processing
+  def self.dispatch_downloads(search_id)
+    Search.find(search_id).scrape_internet.each do |page_id|
+      DownloaderJob.perform_later search_id: search_id, page_id: page_id
     end
   end
 
-  def self.download_and_process(search_id, link)
-    Search.find(search_id).process_one_page(link)
-  end
-
   def scrape_internet
-    queries.map do |q|
-      query_google(q)
-    end.flatten
+    queries.map { |query|
+      SearchQuery.process(string: query, config: options)
+    }.flatten
   end
 
-  def add_result(word: , context: , page: )
-    self.results.find_or_create_by(word: word, context: context, page: page)
+  def queries
+    parsed_query.strings
+  end
+
+  # Download the given link and process the page
+  def self.download_and_process(search_id, page_id)
+    Search.find(search_id).process_one_page(page_id)
   end
 
   def pattern
@@ -38,23 +39,24 @@ class Search < ApplicationRecord
     'es'
   end
 
-  def queries
-    parsed_query.strings
+  def process_one_page(page_id)
+    page = Page.find_or_download_by(id: page_id)
+    sentences = split_body(page.body)
+
+    sentences.each do |sentence|
+      next unless (matched = pattern.match(sentence))
+
+      add_result(
+        word: matched[:target],
+        context: sentence,
+        page_id: page.id
+      )
+    end
+  rescue PageError
   end
 
-  def process_one_page(link)
-    begin
-      page = Page.find_or_download(link)
-
-      sentences = split_body(page.body)
-
-      sentences.each do |sentence|
-        if matched = self.pattern.match(sentence)
-          self.add_result({word: matched[:target], context: sentence, page: page})
-        end
-      end
-    rescue PageError
-    end
+  def add_result(word:, context:, page_id:)
+    results.find_or_create_by(word: word, context: context, page_id: page_id)
   end
 
   def filename
@@ -66,47 +68,34 @@ class Search < ApplicationRecord
 
   private
 
-  def query_google(q)
-    # todo cache queries
-
-    r = []
-    response = GoogleCustomSearchApi.search_and_return_all_results(q, options)
-    # todo handle api error
-    response.each do |page|
-      r << page['items'].map { |item| URI.escape(item['link']) }
-    end
-    r
-  end
-
   def options
     o = {}
     o[:cr] = "country#{country_code}" if country_code.present?
-    o[:language] = "#{language}" if language.present?
+    o[:language] = language.to_s if language.present?
     o[:fileType] = '-pdf'
     o
   end
 
   def check_processing
-    # TODO check search status before deleting
+    # TODO: check search status before deleting
   end
 
   def parsed_query
-    @parsed ||= Parser.parse(query)
+    @parsed_query ||= Parser.parse(query)
   end
 
   def queue_search
-    FinderJob.perform_later(search_id: self.id)
+    FinderJob.perform_later(search_id: id)
   end
 
   def split_body(body)
-    PragmaticSegmenter::Segmenter.new(text: body, language: self.language ).segment
+    PragmaticSegmenter::Segmenter.new(text: body, language: language).segment
+  rescue ArgumentError
   end
 
   def query_must_follow_grammar
-    begin
-      errors.add(:invalid_query, 'The query is invalid') unless parsed_query.valid?
-    rescue
-      errors.add(:error_parsing_query, 'There was an error parsing the query')
-    end
+    errors.add(:invalid_query, 'The query is invalid') unless parsed_query.valid?
+  rescue
+    errors.add(:error_parsing_query, 'There was an error parsing the query')
   end
 end

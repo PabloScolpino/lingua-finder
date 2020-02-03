@@ -10,13 +10,14 @@ services:
       dockerfile: ./Dockerfile
     image: "app:${TAG}"
     depends_on:
-      - database
+      - postgres
+      - mongodb
       - redis
     networks:
       - linguafinder
     ports:
       - "13000:3000"
-    command: bundle exec puma -C config/puma.rb
+    command: bundle exec spring rails server -b 0.0.0.0
     env_file:
       - ./.env
     volumes:
@@ -28,7 +29,8 @@ services:
       dockerfile: ./Dockerfile
     image: "app:${TAG}"
     depends_on:
-      - database
+      - postgres
+      - mongodb
       - redis
     networks:
       - linguafinder
@@ -38,14 +40,22 @@ services:
       - app-sync:/mnt/app
     command: bundle exec sidekiq -C config/sidekiq.yml
 
-  database:
+  postgres:
     image: postgres:9.6.15
     networks:
       - linguafinder
-    expose:
-      - 5432
     volumes:
       - pg-data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:4.2
+    restart: always
+    networks:
+      - linguafinder
+    env_file:
+      - ./.env
+    volumes:
+      - mongo-data:/data/db
 
   redis:
     image: redis:latest
@@ -57,6 +67,7 @@ services:
 
 volumes:
   pg-data:
+  mongo-data:
   redis-data:
   app-sync:
     external: true

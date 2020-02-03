@@ -3,10 +3,15 @@ require 'rails_helper'
 RSpec.describe Page, type: :model, vcr: {} do
 
   describe '.find_or_download' do
+    let(:page_id) {
+      page = create(:page, link: link)
+      page.id.to_s
+    }
 
     context 'a valid link' do
       let(:link) { 'http://www.infobae.com/sociedad/2017/03/09/tucuman-la-iglesia-repudio-una-parodia-a-la-virgen-durante-la-marcha-de-mujeres/' }
-      subject { Page.find_or_download(link) }
+
+      subject { Page.find_or_download_by(id: page_id) }
 
       it { is_expected.to be }
       it { is_expected.to have_attributes(link: link) }
@@ -18,8 +23,9 @@ RSpec.describe Page, type: :model, vcr: {} do
     context 'a link containing weird encoding' do
       let(:link) { 'http://educacionymemoria.educ.ar/primaria/category/vida-cotidiana-durante-la-dictadura/' }
 
-      it 'raises an error' do
-        expect { Page.find_or_download(link) }.to raise_error(PageError)
+      it 'does not raise an error' do
+        # Thanks to mongodb storage
+        expect { Page.find_or_download_by(id: page_id) }.not_to raise_error
       end
 
     end

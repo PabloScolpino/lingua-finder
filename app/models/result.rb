@@ -1,4 +1,7 @@
 class Result < ApplicationRecord
   belongs_to :search
-  belongs_to :page
+
+  def page
+    Page.find(page_id)
+  end
 end

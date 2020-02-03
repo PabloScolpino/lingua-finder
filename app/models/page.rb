@@ -1,23 +1,32 @@
-class Page < ApplicationRecord
-  USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36'
+class Page
+  include Mongoid::Document
 
-  def self.find_or_download(link)
-    begin
-      self.find_or_create_by(link: link) do |p|
-        p.body = download(link)
-      end
-    rescue ActiveRecord::StatementInvalid
-      raise PageError, "Unable to store page"
-    end
+  field :link, type: String
+  field :body, type: String
+
+  has_and_belongs_to_many :search_queries
+
+  def self.find_or_download_by(id: id)
+    page = find(id)
+    page.body = download(page.link)
+    page
+  rescue EncodingError
+    raise PageError, 'could not store page'
   end
 
-  private
+  def id
+    self[:_id].to_s
+  end
+
+  private_class_method
+
+  USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36'.freeze
 
   def self.download(link)
-    #todo handle requests errors
-    #response = HTTParty.get(link, {timeout: timeout})
+    # TODO: handle requests errors
+    #   response = HTTParty.get(link, {timeout: timeout})
     begin
-      response = HTTParty.get(link, headers: {"User-Agent" => USER_AGENT})
+      response = HTTParty.get(link, headers: { 'User-Agent' => USER_AGENT })
     rescue
       raise PageError, 'Unable to retrieve page'
     end
@@ -31,11 +40,7 @@ class Page < ApplicationRecord
 
   def self.strip_body(body)
     doc = Nokogiri::HTML(body)
-    doc.css('script, link, css').each { |node| node.remove }
+    doc.css('script, link, css').each(&:remove)
     doc.text
-  end
-
-  def timeout
-    10
   end
 end

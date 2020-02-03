@@ -263,7 +263,9 @@ RSpec.describe Search, type: :model, vcr: {} do
     }
 
     before do
-      subject.add_result(word: word, context: context, page: page)
+      quietly do
+        subject.add_result(word: word, context: context, page_id: page.id)
+      end
     end
 
     it 'can record all the entires on the db' do
