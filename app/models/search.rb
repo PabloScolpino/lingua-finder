@@ -91,6 +91,7 @@ class Search < ApplicationRecord
   def split_body(body)
     PragmaticSegmenter::Segmenter.new(text: body, language: language).segment
   rescue ArgumentError
+    []
   end
 
   def query_must_follow_grammar
