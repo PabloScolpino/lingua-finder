@@ -154,15 +154,18 @@ test:
       options:
         max_pool_size: 1
 
-cloud: &cloud
+staging:
   clients:
     default:
       uri: <%= ENV['MONGODB_URI'] %>
-    options:
-      connect_timeout: 15
-
-staging:
-  <<: *cloud
+      options:
+        connect_timeout: <%= ENV['MONGODB_TIMEOUT'] %>
+        max_pool_size: <%= ENV['MONGODB_MAX_POOL_SIZE'] %>
 
 production:
-  <<: *cloud
+  clients:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
+      options:
+        connect_timeout: <%= ENV['MONGODB_TIMEOUT'] %>
+        max_pool_size: <%= ENV['MONGODB_MAX_POOL_SIZE'] %>
