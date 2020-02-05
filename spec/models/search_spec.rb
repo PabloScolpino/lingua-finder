@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Search, type: :model, vcr: {} do
   include ActiveJob::TestHelper
 
   describe '#queries' do
+    subject { create(:search, query: query) }
 
     context 'invalid query' do
-      subject { create(:search, query: 'durante') }
+      let(:query) { 'durante' }
 
       it 'raises error' do
         expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
@@ -14,7 +17,7 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'invalid query 2' do
-      subject { create(:search, query: '<?>') }
+      let(:query) { '<?>' }
 
       it 'raises error' do
         expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
@@ -22,7 +25,7 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'string plus target' do
-      subject { create(:search) }
+      let(:query) { 'durante la <?>' }
       let(:expected_queries) do
         [
           'allintext:"durante la"'
@@ -35,11 +38,8 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with category' do
-      before do
-        create(:article_with_words, words: ['la','el','lo'])
-      end
-
-      subject { create(:search, query: 'durante <:article:> <?>') }
+      before { create(:article_with_words, words: %w[la el lo]) }
+      let(:query) { 'durante <:article:> <?>' }
 
       let(:expected_queries) do
         [
@@ -56,11 +56,11 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     context 'with multiple categories' do
       before do
-        create(:article_with_words, words: ['la','el'])
-        create(:name_with_words, words: ['casa','auto'])
+        create(:article_with_words, words: %w[la el])
+        create(:name_with_words, words: %w[casa auto])
       end
 
-      subject { create(:search, query: '<:article:> <:name:> <?>') }
+      let(:query) { '<:article:> <:name:> <?>' }
 
       let(:expected_queries) do
         [
@@ -81,7 +81,7 @@ RSpec.describe Search, type: :model, vcr: {} do
         create(:article_with_words, words: [])
       end
 
-      subject { create(:search, query: 'durante <:article:> <?>') }
+      let(:query) { 'durante <:article:> <?>' }
 
       it 'generates a empty list' do
         expect(subject.queries).to match_array([])
@@ -93,11 +93,11 @@ RSpec.describe Search, type: :model, vcr: {} do
         create(:article_with_words)
       end
 
-      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
+      let(:query) { 'durante <:article:/.*a.*/> <?>' }
 
       let(:expected_queries) do
         [
-          'allintext:"durante la"',
+          'allintext:"durante la"'
         ]
       end
 
@@ -108,13 +108,12 @@ RSpec.describe Search, type: :model, vcr: {} do
   end
 
   describe '#pattern' do
+    subject { create(:search, query: query) }
+    let(:expected_regex) { Regexp.new(expected_regex_pattern) }
 
     context 'string plus target' do
-      subject { create(:search) }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+la[[:space:]]+(?<target>[[:alpha:]]+)')
-      end
+      let(:query) { 'durante la <?>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+la[[:space:]]+(?<target>[[:alpha:]]+)' }
 
       it 'can generate a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -123,15 +122,11 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with category' do
-      before do
-        create(:article_with_words, words: ['la','el','lo'])
-      end
-
-      subject { create(:search, query: 'durante <:article:> <?>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(la|el|lo)[[:space:]]+(?<target>[[:alpha:]]+)')
-      end
+      before { create(:article_with_words, words: %w[la el lo]) }
+      let(:query) { 'durante <:article:> <?>' }
+      let(:expected_regex_pattern) {
+        'durante[[:space:]]+(la|el|lo)[[:space:]]+(?<target>[[:alpha:]]+)'
+      }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -141,15 +136,15 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     context 'with multiple categories' do
       before do
-        create(:article_with_words, words: ['la','el'])
-        create(:name_with_words, words: ['casa','auto'])
+        create(:article_with_words, words: %w[la el])
+        create(:name_with_words, words: %w[casa auto])
       end
 
-      subject { create(:search, query: '<:article:> <:name:> <?>') }
+      let(:query) { '<:article:> <:name:> <?>' }
 
-      let(:expected_regex) do
-        Regexp.new('(la|el)[[:space:]]+(casa|auto)[[:space:]]+(?<target>[[:alpha:]]+)')
-      end
+      let(:expected_regex_pattern) {
+        '(la|el)[[:space:]]+(casa|auto)[[:space:]]+(?<target>[[:alpha:]]+)'
+      }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -162,27 +157,22 @@ RSpec.describe Search, type: :model, vcr: {} do
         create(:article_with_words, words: [])
       end
 
-      subject { create(:search, query: '<:article:> <?>') }
-
-      let(:expected_regex) do
-        Regexp.new('(?<target>[[:alpha:]]+)')
-      end
+      let(:query) { '<:article:> <?>' }
+      let(:expected_regex_pattern) { '(?<target>[[:alpha:]]+)' }
 
       it 'generates a target only pattern' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
         expect(subject.pattern).to eq(expected_regex)
       end
     end
+
     context 'with category and filter' do
       before do
         create(:article_with_words)
       end
 
-      subject { create(:search, query: 'durante <:article:/.*a.*/> <?>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(la)[[:space:]]+(?<target>[[:alpha:]]+)')
-      end
+      let(:query) { 'durante <:article:/.*a.*/> <?>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(la)[[:space:]]+(?<target>[[:alpha:]]+)' }
 
       it 'generates a  pattern' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -192,14 +182,11 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     context 'with category in target' do
       before do
-        create(:article_with_words, words: ['la','el','lo'])
+        create(:article_with_words, words: %w[la el lo])
       end
 
-      subject { create(:search, query: 'durante <?:article:>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>(la|el|lo))([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?:article:>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>(la|el|lo))([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -208,11 +195,8 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with regex in target' do
-      subject { create(:search, query: 'durante <?/.*a/>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>.*a)([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?/.*a/>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>.*a)([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -221,11 +205,8 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with regex in target 2' do
-      subject { create(:search, query: 'durante <?/.*ncho/>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>.*ncho)([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?/.*ncho/>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>.*ncho)([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -234,11 +215,8 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with regex in target 3' do
-      subject { create(:search, query: 'durante <?/.*nga/>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>.*nga)([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?/.*nga/>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>.*nga)([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -247,11 +225,8 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
 
     context 'with regex in target 4' do
-      subject { create(:search, query: 'durante <?/\Sa/>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>\Sa)([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?/\Sa/>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>\Sa)([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -261,14 +236,11 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     context 'with category and regex in target' do
       before do
-        create(:article_with_words, words: ['la','el','lo','las'])
+        create(:article_with_words, words: %w[la el lo las])
       end
 
-      subject { create(:search, query: 'durante <?:article:/.*a.*/>') }
-
-      let(:expected_regex) do
-        Regexp.new('durante[[:space:]]+(?<target>(la|las))([[:space:]]|[[:punct:]])+')
-      end
+      let(:query) { 'durante <?:article:/.*a.*/>' }
+      let(:expected_regex_pattern) { 'durante[[:space:]]+(?<target>(la|las))([[:space:]]|[[:punct:]])+' }
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -291,7 +263,9 @@ RSpec.describe Search, type: :model, vcr: {} do
     }
 
     before do
-      subject.add_result({word: word, context: context, page: page})
+      quietly do
+        subject.add_result(word: word, context: context, page_id: page.id)
+      end
     end
 
     it 'can record all the entires on the db' do
@@ -304,7 +278,7 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     before do
       quietly do
-        Search.dispatch_downloads (subject.id)
+        Search.dispatch_downloads(subject.id)
       end
     end
 
@@ -313,7 +287,7 @@ RSpec.describe Search, type: :model, vcr: {} do
     end
   end
 
-  describe '#scrape_internet' do
+  xdescribe '#scrape_internet' do
     subject { create(:search) }
 
     before do

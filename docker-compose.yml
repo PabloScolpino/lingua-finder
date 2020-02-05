@@ -1,0 +1,73 @@
+version: "3"
+
+networks:
+  linguafinder:
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: "app:${TAG}"
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    networks:
+      - linguafinder
+    ports:
+      - "13000:3000"
+    command: bundle exec spring rails server -b 0.0.0.0
+    env_file:
+      - ./.env
+    volumes:
+      - app-sync:/mnt/app
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: "app:${TAG}"
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    networks:
+      - linguafinder
+    env_file:
+      - ./.env
+    volumes:
+      - app-sync:/mnt/app
+    command: bundle exec sidekiq -C config/sidekiq.yml
+
+  postgres:
+    image: postgres:9.6.15
+    networks:
+      - linguafinder
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:4.2
+    restart: always
+    networks:
+      - linguafinder
+    env_file:
+      - ./.env
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - linguafinder
+    volumes:
+      - redis-data:/data
+
+volumes:
+  pg-data:
+  mongo-data:
+  redis-data:
+  app-sync:
+    external: true

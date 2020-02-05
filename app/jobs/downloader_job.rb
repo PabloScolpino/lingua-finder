@@ -3,7 +3,7 @@ class DownloaderJob < ApplicationJob
     puts "DownloaderJob failed to find Search id=#{arguments[0]}"
   end
 
-  def perform(search_id:, link:)
-    Search.download_and_process(search_id, link)
+  def perform(search_id:, page_id:)
+    Search.download_and_process(search_id, page_id)
   end
 end

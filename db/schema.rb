@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170312122454) do
+ActiveRecord::Schema.define(version: 20200202232745) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,19 +21,12 @@ ActiveRecord::Schema.define(version: 20170312122454) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "pages", force: :cascade do |t|
-    t.string   "link"
-    t.text     "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "results", force: :cascade do |t|
     t.string   "word"
     t.integer  "search_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "page_id"
+    t.string   "page_id"
     t.string   "context"
     t.index ["page_id"], name: "index_results_on_page_id", using: :btree
     t.index ["search_id"], name: "index_results_on_search_id", using: :btree
@@ -69,7 +62,7 @@ ActiveRecord::Schema.define(version: 20170312122454) do
     t.index ["category_id"], name: "index_words_on_category_id", using: :btree
   end
 
-  add_foreign_key "results", "pages"
+  add_foreign_key "results", "searches"
   add_foreign_key "searches", "users"
   add_foreign_key "words", "categories"
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LinguaFinder
   class BaseNode < Treetop::Runtime::SyntaxNode
     def strings
@@ -60,18 +62,19 @@ module LinguaFinder
 
     def space_pattern
       '[[:space:]]+'
-
     end
   end
 
   class ExpressionNode < BaseNode
     def strings
       raise 'invalid tree' if elements.size > 1
+
       elements.first.strings
     end
 
     def pattern
       raise 'invalid tree' if elements.size > 1
+
       elements.first.pattern
     end
 
@@ -87,6 +90,7 @@ module LinguaFinder
 
     def pattern
       return if words.empty?
+
       '(' + words.join('|') + ')'
     end
 
@@ -118,41 +122,38 @@ module LinguaFinder
   end
 
   class RegexNode < BaseNode
-    def strings
-    end
+    def strings; end
 
     def pattern
-      content[1 .. content.size()-2]
+      content[1..content.size - 2]
     end
   end
 
   class TargetNode < BaseNode
-    def strings
-    end
+    def strings; end
 
     def pattern
       p = '(?<target>'
       if elements.size > 0
-        p = p + elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
+        p += elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
       else
-        p = p + '[[:alpha:]]+)'
+        p += '[[:alpha:]]+)'
       end
       p
     end
   end
 
   class DistanceNode < BaseNode
-    def strings
-    end
+    def strings; end
   end
 
   class StringNode < BaseNode
     def strings
-      [ content ]
+      [content]
     end
+
     def pattern
       content
     end
   end
-
 end

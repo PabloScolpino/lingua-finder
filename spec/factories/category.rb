@@ -1,11 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :category do
-    name Faker::Lorem.word
+    name { Faker::Lorem.word }
 
     factory :article_with_words do
-      name 'article'
+      name { 'article' }
       transient do
-        words ['la','lo','le']
+        words { ['la','lo','le'] }
       end
 
       after(:create) do |category, evaluator|
@@ -14,9 +14,9 @@ FactoryGirl.define do
     end
 
     factory :name_with_words do
-      name 'name'
+      name { 'name' }
       transient do
-        words ['casa','auto','hombre', 'mujer']
+        words { ['casa','auto','hombre', 'mujer'] }
       end
 
       after(:create) do |category, evaluator|
