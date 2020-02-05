@@ -150,7 +150,7 @@ test:
     default:
       database: lingua_finder_test
       hosts:
-        - mongodb:27017
+        - locahost:27017
       options:
         read:
           mode: :primary
