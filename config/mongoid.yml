@@ -150,8 +150,6 @@ test:
     default:
       database: lingua_finder_test
       hosts:
-        - locahost:27017
+        - localhost:27017
       options:
-        read:
-          mode: :primary
         max_pool_size: 1
