@@ -153,3 +153,16 @@ test:
         - localhost:27017
       options:
         max_pool_size: 1
+
+cloud: &cloud
+  clients:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
+    options:
+      connect_timeout: 15
+
+staging:
+  <<: *cloud
+
+production:
+  <<: *cloud
