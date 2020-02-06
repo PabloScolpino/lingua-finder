@@ -16,7 +16,7 @@
 
         tbody
           - @searches.each do |search|
-            tr
+            tr.hoverable
               td = search.query
               td = search.country_code
               td = search.results.count

@@ -1,0 +1,4 @@
+.row
+  = link_to 'Atras', search_path(@search.id), class: 'btn'
+  .right
+    = link_to 'Descarga', search_results_path(search_id: @search.id, word: params[:word], format: :csv), { class: 'btn', download: "#{@search.filename}_#{params[:word]}"}

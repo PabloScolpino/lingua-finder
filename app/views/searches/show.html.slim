@@ -3,6 +3,8 @@
     h1
       = @search.query
 
+  = render 'searches/show_btn.html.slim'
+
   .row
     .results
       table
@@ -10,13 +12,12 @@
           tr
             th.data-field Palabra
             th.data-field Cantidad
+            th.data-field
         tbody
           - @results.sort_by{|k,v| v}.reverse.each do |word, count|
-            tr onclick="location.href='#{search_results_path({search_id: @search.id, word: word})}'"
+            tr.hoverable
               td = word
               td = count
+              td = link_to 'Ver', search_results_path({search_id: @search.id, word: word}) , class: 'btn indigo'
 
-  .row
-    = link_to 'Descargar', search_path(id: @search.id, format: :csv), { class: 'btn', download: @search.filename }
-  .row
-    = link_to 'Atras', searches_path, class: 'btn'
+  = render 'searches/show_btn.html.slim'

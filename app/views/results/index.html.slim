@@ -1,29 +1,21 @@
 .container
   .row
     h1 = @search.query
-
   .row
     h2 = params[:word]
 
-  /.row
-    .col.s12
-      ul.tabs
-      - @alternatives.each do |word,_|
-        li.tab
-          = link_to "#{word}",search_results_path({search_id: @search.id, word: word})
+  = render 'results/index_btn.html.slim'
 
-  .row id="#{params[:word]}"
+  .row
     table
       tbody
         - @results.each do |result|
-          tr
-            td.right-align = result.context.split(result.word).first
-            td.center-align
-              strong = result.word
-            td.left-align = result.context.split(result.word).second
+          tr.hoverable
+            td
+              p
+                = result.context.split(result.word).first
+                mark
+                  = result.word
+                = result.context.split(result.word).second
 
-  .row
-    = link_to 'Descarga', search_results_path(search_id: @search.id, word: params[:word], format: :csv), { class: 'btn', download: "#{@search.filename}_#{params[:word]}"}
-
-  .row
-    = link_to 'Atras', search_path(@search.id), class: 'btn'
+  = render 'results/index_btn.html.slim'
