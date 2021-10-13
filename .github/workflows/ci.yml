@@ -5,13 +5,25 @@ on:
   push:
     branches: [ master ]
 
+env:
+  RUBY_VERSION: 2.4.4
+  BUNDLER_VERSION: 1.16.6
+
 jobs:
-  build:
-    name: tests
+  setup:
     runs-on: ubuntu-latest
-    env:
-      RUBY_VERSION: 2.4.4
-      BUNDLER_VERSION: 1.16.6
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -25,13 +37,6 @@ jobs:
         ports: ["27017:27017"]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-
       - name: Setup Database
         env:
           RAILS_ENV: test
@@ -45,3 +50,7 @@ jobs:
           DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
           MONGODB_URI: mongodb://localhost/lingua_finder_test
         run: bundle exec rspec
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@1.1.3
+
