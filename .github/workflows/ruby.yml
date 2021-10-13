@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: tests
+    runs-on: ubuntu-latest
+    env:
+      RUBY_VERSION: 2.4.4
+      BUNDLER_VERSION:  
+
+    services:
+      postgres:
+        image: postgres:9.6.15
+        ports: ["5432:5432"]
+      redis:
+        image: redis
+        ports: ["6379:6379"]
+      mongodb:
+        image: mongodb:4.2
+        ports: ["27017:27017"]
+      
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+
+      - name: Install PostgreSQL
+        run: sudo apt-get -yqq install libpq-dev
+
+      - name: Run bundle install
+        run: |
+          gem install bundler -v ${{ env.BUNDLER_VERSION }}
+          bundle install --jobs 4 --retry 3
+          
+      - name: Setup Database
+        env:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: postgres
+        run: bin/rails db:create db:schema:load
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: postgres
+        run: bundle exec rspec
