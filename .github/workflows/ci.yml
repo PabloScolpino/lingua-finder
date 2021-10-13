@@ -13,18 +13,6 @@ jobs:
   setup:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:9.6.15
@@ -37,6 +25,13 @@ jobs:
         ports: ["27017:27017"]
 
     steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
       - name: Setup Database
         env:
           RAILS_ENV: test
