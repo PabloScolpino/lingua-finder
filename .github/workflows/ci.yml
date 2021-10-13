@@ -26,29 +26,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
 
-      - name: Install PostgreSQL
-        run: sudo apt-get -yqq install libpq-dev
-
-      - name: Run bundle install
-        run: |
-          gem install bundler -v ${{ env.BUNDLER_VERSION }}
-          bundle install --jobs 4 --retry 3
-
       - name: Setup Database
         env:
           RAILS_ENV: test
-          PGHOST: localhost
-          PGUSER: postgres
+          DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
         run: bin/rails db:create db:schema:load
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          PGHOST: localhost
-          PGUSER: postgres
+          REDIS_URL: redis://localhost
+          DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
+          MONGODB_URI: mongodb://localhost/lingua_finder_test
         run: bundle exec rspec
