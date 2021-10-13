@@ -55,10 +55,6 @@ gem 'httparty'
 gem 'pragmatic_segmenter'
 gem 'treetop'
 
-group :production, :staging do
-  # Garbage collection tuning
-  gem 'tunemygc'
-end
 
 group :test do
   gem 'database_cleaner'
@@ -67,16 +63,16 @@ group :test do
 end
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'awesome_print'
-  gem 'byebug', '~> 9', platform: :mri
   gem 'coveralls', require: false
+  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'fuubar'
   gem 'rerun'
   gem 'rspec-rails'
   gem 'ruby-prof', '>= 0.17.0', require: false
+  gem 'simplecov', require: false
   gem 'vcr'
   gem 'webmock'
 end

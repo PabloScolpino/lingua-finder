@@ -34,7 +34,6 @@ COPY --from=production-builder $RAILS_ROOT $RAILS_ROOT
 # Development image
 #
 FROM builder-base AS development
-ENV RAILS_ENV=development
 ARG PACKAGES
 ARG DEV_PACKAGES="postgresql-client"
 ARG RAILS_ROOT

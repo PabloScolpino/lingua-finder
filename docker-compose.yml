@@ -3,11 +3,6 @@ version: "3"
 x-rails-app-defaults: &rails-app-defaults
   image: "lingua-finder:${TAG}"
   entrypoint: bin/docker-entrypoint.sh
-  env_file:
-    - .env
-  environment:
-    DATABASE_URL: postgres://postgres@postgres/lingua_finder
-    MONGODB_URI: mongodb://mongodb/lingua_finder
   volumes:
     - .:/app:cached
     - bundler:/bundler:cached
@@ -39,7 +34,6 @@ services:
     image: postgres:9.6.15-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: lingua_finder
     volumes:
       - pg-data:/var/lib/postgresql/data
 

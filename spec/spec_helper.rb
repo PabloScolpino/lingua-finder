@@ -1,5 +1,13 @@
+ENV['RAILS_ENV'] ||= 'test'
+
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!
+Coveralls.wear!('rails')
+
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'app/secrets'
+end
 
 require 'fakeredis'
 require 'awesome_print'
