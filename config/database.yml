@@ -1,7 +1,6 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: postgres
   pool: <%= ENV["DB_POOL"] || 5 %>
   variables:
     statement_timeout: <%= ENV["DB_TIMEOUT"] || 5000 %>
@@ -9,12 +8,12 @@ default: &default
 development:
   <<: *default
   database: lingua_finder_dev
-  host: postgres
+  url: <%= ENV['DATABASE_URL'] %>
 
 test:
   <<: *default
   database: lingua_finder_test
-  host: postgres
+  url: <%= ENV['DATABASE_URL'] %>
 
 production:
   <<: *default
