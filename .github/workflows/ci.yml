@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUBY_VERSION: 2.4.4
-      BUNDLER_VERSION:  
+      BUNDLER_VERSION:
 
     services:
       postgres:
@@ -20,10 +20,10 @@ jobs:
       redis:
         image: redis
         ports: ["6379:6379"]
-      mongodb:
-        image: mongodb:4.2
+      mongo:
+        image: mongo:4.2
         ports: ["27017:27017"]
-      
+
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-ruby@v1
@@ -37,7 +37,7 @@ jobs:
         run: |
           gem install bundler -v ${{ env.BUNDLER_VERSION }}
           bundle install --jobs 4 --retry 3
-          
+
       - name: Setup Database
         env:
           RAILS_ENV: test
