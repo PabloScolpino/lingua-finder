@@ -15,8 +15,6 @@ jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
-    if: github.event.pull_request.merged == 'true'
-
     runs-on: ubuntu-latest
     permissions:
       packages: write
