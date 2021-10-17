@@ -29,6 +29,7 @@ ENV RAILS_ENV=production
 ARG RAILS_ROOT
 # Coping the generated artifacts and scrapping all the libs and binaries not necesary for execution
 COPY --from=production-builder $RAILS_ROOT $RAILS_ROOT
+LABEL org.opencontainers.image.source https://github.com/pabloscolpino/lingua-finder
 
 ################################################################################
 # Development image
@@ -45,3 +46,4 @@ ENV PATH="$BUNDLE_BIN:$RAILS_ROOT/bin:$PATH"
 
 RUN apk add --update-cache $PACKAGES $DEV_PACKAGES && \
     bundle install --jobs 4 --retry 3
+LABEL org.opencontainers.image.source https://github.com/pabloscolpino/lingua-finder

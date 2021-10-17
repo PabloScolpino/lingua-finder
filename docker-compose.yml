@@ -1,7 +1,7 @@
 version: "3"
 
 x-rails-app-defaults: &rails-app-defaults
-  image: "lingua-finder:${TAG}"
+  image: "ghcr.io/pabloscolpino/lingua-finder:latest"
   entrypoint: bin/docker-entrypoint.sh
   volumes:
     - .:/app:cached
