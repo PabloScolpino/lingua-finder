@@ -64,7 +64,6 @@ end
 
 group :development, :test do
   gem 'awesome_print'
-  gem 'coveralls', require: false
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
@@ -72,7 +71,8 @@ group :development, :test do
   gem 'rerun'
   gem 'rspec-rails'
   gem 'ruby-prof', '>= 0.17.0', require: false
-  gem 'simplecov', require: false
+  gem 'simplecov'
+  gem 'simplecov-lcov', '~> 0.8.0'
   gem 'vcr'
   gem 'webmock'
 end
