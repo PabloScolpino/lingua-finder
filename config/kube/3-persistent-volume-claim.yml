@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: lingua-finder
+  name: lingua-finder-postgres
+spec:
+  volumeName: lingua-finder-postgres
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: lingua-finder
+  name: lingua-finder-mongo
+spec:
+  volumeName: lingua-finder-mongo
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs
+  resources:
+    requests:
+      storage: 50Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: lingua-finder
+  name: lingua-finder-redis
+spec:
+  volumeName: lingua-finder-redis
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs
+  resources:
+    requests:
+      storage: 1Mi
