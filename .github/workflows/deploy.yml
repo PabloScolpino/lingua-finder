@@ -44,10 +44,16 @@ jobs:
         run: |
           application_name=lingua-finder-staging
 
-          # TODO: add one for worker too
-          heroku_image_tag=registry.heroku.com/${application_name}/web
-          echo "heroku_image_tag=${heroku_image_tag}"
-          echo "heroku_image_tag=${heroku_image_tag}" >> $GITHUB_ENV
+          heroku_image_tag=registry.heroku.com/${application_name}
+
+          heroku_image_tag_web=${heroku_image_tag}/web
+          heroku_image_tag_worker=${heroku_image_tag}/worker
+
+          echo "heroku_image_tag_web=${heroku_image_tag_web}"
+          echo "heroku_image_tag_web=${heroku_image_tag_web}" >> $GITHUB_ENV
+
+          echo "heroku_image_tag_worker=${heroku_image_tag_worker}"
+          echo "heroku_image_tag_worker=${heroku_image_tag_worker}" >> $GITHUB_ENV
 
       # - name: Set up QEMU
         # uses: docker/setup-qemu-action@v1
@@ -77,6 +83,7 @@ jobs:
           # platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ghcr_image_tag }}
-            ${{ env.heroku_image_tag }}
+            ${{ env.heroku_image_tag_web }}
+            ${{ env.heroku_image_tag_worker }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
