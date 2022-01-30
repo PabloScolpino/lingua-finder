@@ -39,7 +39,7 @@ jobs:
           [ "$version" == "master" ] && version=latest
           echo "ghcr_image_tag=${image_id}:${version}"
           echo "ghcr_image_tag=${image_id}:${version}" >> $GITHUB_ENV
-                -
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
