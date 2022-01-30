@@ -52,5 +52,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ env.IMAGE_ID_VERSION }}
+          tags: ${{ env.image_id_version }}
+          target: production
 
