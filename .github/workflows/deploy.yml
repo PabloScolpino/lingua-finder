@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Prepare image name
+      - name: Prepare GHCR's image tag
         run: |
           image_id=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
 
@@ -39,6 +39,15 @@ jobs:
           [ "$version" == "master" ] && version=latest
           echo "ghcr_image_tag=${image_id}:${version}"
           echo "ghcr_image_tag=${image_id}:${version}" >> $GITHUB_ENV
+
+      - name: Prepare Heroku's image tag
+        run: |
+          application_name=lingua-finder-staging
+
+          # TODO: add one for worker too
+          heroku_image_tag=registry.heroku.com/${application_name}/web
+          echo "heroku_image_tag=${heroku_image_tag}"
+          echo "heroku_image_tag=${heroku_image_tag}" >> $GITHUB_ENV
 
       # - name: Set up QEMU
         # uses: docker/setup-qemu-action@v1
@@ -68,7 +77,6 @@ jobs:
           # platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ghcr_image_tag }}
-            registry.heroku.com/${{ env.IMAGE_NAME }}/web
-            registry.heroku.com/${{ env.IMAGE_NAME }}/worker
+            ${{ env.heroku_image_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
