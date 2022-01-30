@@ -37,8 +37,8 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && version=$(echo $version | sed -e 's/^v//')
           # Use Docker `latest` tag convention
           [ "$version" == "master" ] && version=latest
-          echo "image_id_version=${image_id}:${version}"
-          echo "image_id_version=${image_id}:${version}" >> $GITHUB_ENV
+          echo "ghcr_image_tag=${image_id}:${version}"
+          echo "ghcr_image_tag=${image_id}:${version}" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -47,11 +47,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Login to Heroku's container registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.heroku.com
+          username: ${{ secrets.HEROKU_USERNAME }}
+          password: ${{ secrets.HEROKU_PASSWORD }}
+
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ env.image_id_version }}
           target: production
-
+          tags: |
+            ${{ env.ghcr_image_tag }}
+            registry.heroku.com/${{ env.IMAGE_NAME }}/web
+            registry.heroku.com/${{ env.IMAGE_NAME }}/worker
