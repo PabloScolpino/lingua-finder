@@ -70,3 +70,5 @@ jobs:
             ${{ env.ghcr_image_tag }}
             registry.heroku.com/${{ env.IMAGE_NAME }}/web
             registry.heroku.com/${{ env.IMAGE_NAME }}/worker
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
