@@ -37,6 +37,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && version=$(echo $version | sed -e 's/^v//')
           # Use Docker `latest` tag convention
           [ "$version" == "master" ] && version=latest
+          echo "image_id_version=${image_id}:${version}"
           echo "image_id_version=${image_id}:${version}" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
