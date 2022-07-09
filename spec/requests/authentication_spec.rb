@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Authentication", type: :request do
-  describe "GET /searches" do
+RSpec.describe 'Authentication', type: :request do
+  describe 'GET /searches' do
     context 'not logged in' do
-      it "redirects to login!" do
+      it 'redirects to login!' do
         get searches_path
         expect(response).to redirect_to(root_path)
       end

@@ -4,60 +4,38 @@ source 'https://rubygems.org'
 
 ruby '2.4.4'
 
-gem 'pg'
-gem 'puma', '~> 4.3'
-gem 'rails', '~> 5.0.0'
-
-# Error monitoring
-gem 'lograge'
-gem 'oj'
-gem 'rollbar'
-
-# Use SCSS for stylesheets
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
+gem 'active_interaction'
 gem 'coffee-rails', '~> 4.2'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
-
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
-
-# ODM database for page caching
-gem 'mongoid'
-
-# User login
-gem 'devise'
-gem 'omniauth-google-oauth2'
-gem 'responders', '< 3'
-
-# Queuing
-gem 'sidekiq', '< 6'
-
-# views
 gem 'country_select'
-gem 'material_icons'
-gem 'materialize-sass'
-gem 'sass-rails', '~> 5.0'
-gem 'simple_form'
-gem 'slim-rails'
-
-# Search tools
+gem 'devise'
 gem 'google_custom_search_api'
 gem 'httparty'
-
-# natural language processing
+gem 'jbuilder', '~> 2.5'
+gem 'jquery-rails'
+gem 'lograge'
+gem 'material_icons'
+gem 'materialize-sass'
+gem 'mongoid'
+gem 'oj'
+gem 'omniauth-google-oauth2'
+gem 'pg'
 gem 'pragmatic_segmenter'
+gem 'puma', '~> 4.3'
+gem 'rails', '~> 5.0.0'
+gem 'responders', '< 3'
+gem 'rollbar'
+gem 'sass-rails', '~> 5.0'
+gem 'sidekiq', '< 6'
+gem 'simple_form'
+gem 'slim-rails'
 gem 'treetop'
-
+gem 'turbolinks', '~> 5'
+gem 'uglifier', '>= 1.3.0'
 
 group :test do
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
+  gem 'database_cleaner-mongoid'
+  # gem 'database_cleaner'
   gem 'fakeredis'
   gem 'rails-controller-testing'
 end
@@ -78,18 +56,8 @@ group :development, :test do
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %>
-  #   anywhere in the code.
   gem 'guard-rspec'
+  gem 'guard-rubocop'
   gem 'listen', '~> 3.0.5'
   gem 'pry-rails'
-  # Spring speeds up development by keeping your application running
-  # in the background.
-  # Read more: https://github.com/rails/spring
-  # gem 'spring', '< 2.1'
-  # gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'web-console'
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

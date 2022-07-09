@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :category do
     name { Faker::Lorem.word }
@@ -5,7 +7,7 @@ FactoryBot.define do
     factory :article_with_words do
       name { 'article' }
       transient do
-        words { ['la','lo','le'] }
+        words { %w[la lo le] }
       end
 
       after(:create) do |category, evaluator|
@@ -16,7 +18,7 @@ FactoryBot.define do
     factory :name_with_words do
       name { 'name' }
       transient do
-        words { ['casa','auto','hombre', 'mujer'] }
+        words { %w[casa auto hombre mujer] }
       end
 
       after(:create) do |category, evaluator|

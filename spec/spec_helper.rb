@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RAILS_ENV'] ||= 'test'
 
 require 'simplecov'
@@ -17,6 +19,7 @@ SimpleCov.start 'rails' do
   add_filter %w[version.rb initializer.rb]
 end
 
+require 'webmock/rspec'
 require 'fakeredis'
 require 'awesome_print'
 
@@ -31,4 +34,7 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
 end

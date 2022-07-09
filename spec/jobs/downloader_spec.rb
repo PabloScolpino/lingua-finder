@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe DownloaderJob, type: :job, vcr: {} do
@@ -9,7 +11,7 @@ RSpec.describe DownloaderJob, type: :job, vcr: {} do
   it 'gets queued properly' do
     assert_performed_with(
       job: DownloaderJob,
-      args: [{search_id: search.id, page_id: page.id}],
+      args: [{ search_id: search.id, page_id: page.id }],
       queue: queue_name
     ) do
       DownloaderJob.perform_later search_id: search.id, page_id: page.id

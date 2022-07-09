@@ -3,9 +3,7 @@
 module LinguaFinder
   class BaseNode < Treetop::Runtime::SyntaxNode
     def strings
-      elements.map do |element|
-        element.strings
-      end.compact
+      elements.map(&:strings).compact
     end
 
     def pattern
@@ -17,7 +15,7 @@ module LinguaFinder
     end
 
     def has_child?(class_name)
-      self.class == class_name
+      instance_of?(class_name)
     end
   end
 
@@ -25,7 +23,7 @@ module LinguaFinder
     def strings
       list = []
 
-      tree = elements.map { |e| e.strings }.compact
+      tree = elements.map(&:strings).compact
       first = tree.shift
       first.product(*tree).each do |combination|
         list << start_token + combination.join(' ') + end_token
@@ -34,7 +32,7 @@ module LinguaFinder
     end
 
     def pattern
-      p = elements.map { |e| e.pattern }.compact.join(space_pattern)
+      p = elements.map(&:pattern).compact.join(space_pattern)
       Regexp.new(p)
     end
 
@@ -49,7 +47,7 @@ module LinguaFinder
     private
 
     def has_child?(class_name)
-      elements.select { |e| e.has_child?(class_name) }.size > 0
+      elements.any? { |e| e.has_child?(class_name) }
     end
 
     def start_token
@@ -79,7 +77,7 @@ module LinguaFinder
     end
 
     def has_child?(class_name)
-      elements.select { |e| e.has_child?(class_name) }.size > 0
+      elements.any? { |e| e.has_child?(class_name) }
     end
   end
 
@@ -91,7 +89,7 @@ module LinguaFinder
     def pattern
       return if words.empty?
 
-      '(' + words.join('|') + ')'
+      "(#{words.join('|')})"
     end
 
     private
@@ -134,11 +132,11 @@ module LinguaFinder
 
     def pattern
       p = '(?<target>'
-      if elements.size > 0
-        p += elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
-      else
-        p += '[[:alpha:]]+)'
-      end
+      p += if elements.any?
+             "#{elements.first.pattern})([[:space:]]|[[:punct:]])+"
+           else
+             '[[:alpha:]]+)'
+           end
       p
     end
   end

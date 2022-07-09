@@ -18,4 +18,3 @@ test:
 production:
   <<: *default
   database: lingua_finder_prod
-  url: <%= ENV['DATABASE_URL'] %>
