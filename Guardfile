@@ -44,6 +44,8 @@ guard :rspec, cmd: 'bundle exec rspec --format=doc' do
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
     Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
+
+  watch(%r{^lib/}) { "#{rspec.spec_dir}/models/search_spec.rb" }
 end
 # rubocop:enable Metrics/BlockLength
 
