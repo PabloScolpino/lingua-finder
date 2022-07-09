@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DownloaderJob < ApplicationJob
   rescue_from(ActiveRecord::RecordNotFound) do |_exception|
     puts "DownloaderJob failed to find Search id=#{arguments[0]}"

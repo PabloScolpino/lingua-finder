@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 class Parser
   base_path = __dir__
   require File.join(base_path, 'node_extensions.rb')
   Treetop.load(File.join(base_path, 'lingua_finder_parser.treetop'))
 
-  @@parser = LinguaFinderParser.new
+  @parser = LinguaFinderParser.new
 
   def self.parse(data)
-    tree = @@parser.parse(data.strip)
+    tree = @parser.parse(data.strip)
 
-    raise Exception, "Parse error at offset: #{@@parser.index}" if tree.nil?
+    raise "Parse error at offset: #{@parser.index}" if tree.nil?
 
     clean_tree(tree)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinderJob < ApplicationJob
   rescue_from(ActiveRecord::RecordNotFound) do |_exception|
     puts "FinderJob Failed to find Serarch id=#{arguments[0]}"

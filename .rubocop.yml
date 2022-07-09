@@ -4,3 +4,14 @@
 AllCops:
   Exclude:
     - 'db/schema.rb'
+  NewCops: disable
+  EnabledByDefault: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  IgnoreMacros: true

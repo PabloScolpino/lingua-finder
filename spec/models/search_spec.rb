@@ -259,7 +259,7 @@ RSpec.describe Search, type: :model, vcr: {} do
     let(:page) do
       Page.create(
         link: 'http://wikipedia.com/bla.htm',
-        body: 'body bla bla.' + word + 'something else here.'
+        body: "body bla bla. #{word} something else here."
       )
     end
 

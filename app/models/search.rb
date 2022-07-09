@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Search < ApplicationRecord
   belongs_to :user
   has_many :results, dependent: :destroy
@@ -53,6 +55,7 @@ class Search < ApplicationRecord
       )
     end
   rescue PageError
+    Rails.logger.warning 'error processing page'
   end
 
   def add_result(word:, context:, page_id:)

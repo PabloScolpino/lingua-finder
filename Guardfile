@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:diable Metrics/BlockLength
 guard :rspec, cmd: 'bundle exec rspec --format=doc' do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
@@ -42,6 +45,7 @@ guard :rspec, cmd: 'bundle exec rspec --format=doc' do
     Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 guard :rubocop, all_on_start: false, cli: ['--display-cop-names'] do
   watch(/.+\.rb$/)

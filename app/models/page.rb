@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Page
   include Mongoid::Document
 
@@ -6,7 +8,7 @@ class Page
 
   has_and_belongs_to_many :search_queries
 
-  def self.find_or_download_by(id: id)
+  def self.find_or_download_by(id:)
     page = find(id)
     page.body = download(page.link)
     page
@@ -18,7 +20,7 @@ class Page
     self[:_id].to_s
   end
 
-  USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36'.freeze
+  USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36'
 
   def self.download(link)
     # TODO: handle requests errors
