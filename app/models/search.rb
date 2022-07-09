@@ -17,9 +17,9 @@ class Search < ApplicationRecord
   end
 
   def scrape_internet
-    queries.map { |query|
+    queries.map do |query|
       SearchQuery.process(string: query, config: options)
-    }.flatten
+    end.flatten
   end
 
   def queries
@@ -60,8 +60,8 @@ class Search < ApplicationRecord
   end
 
   def filename
-    return query.strip do |q|
-      q.gsub!(/^.*(\\|\/)/, '')
+    query.strip do |q|
+      q.gsub!(%r{^.*(\\|/)}, '')
       q.gsub!(/[^0-9A-Za-z.\-]/, '_')
     end
   end
@@ -96,7 +96,7 @@ class Search < ApplicationRecord
 
   def query_must_follow_grammar
     errors.add(:invalid_query, 'The query is invalid') unless parsed_query.valid?
-  rescue
+  rescue StandardError
     errors.add(:error_parsing_query, 'There was an error parsing the query')
   end
 end

@@ -6,11 +6,9 @@ class ResultsController < ApplicationController
   before_action :set_alternatives
   before_action :set_result, only: [:show]
 
-  def index
-  end
+  def index; end
 
-  def show
-  end
+  def show; end
 
   private
 
@@ -31,6 +29,6 @@ class ResultsController < ApplicationController
   end
 
   def set_result
-    @result = @search.result.select{ |r| r.id == params[:id]}
+    @result = @search.result.select { |r| r.id == params[:id] }
   end
 end

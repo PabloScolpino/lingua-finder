@@ -67,7 +67,7 @@ RSpec.describe Search, type: :model, vcr: {} do
           'allintext:"la casa"',
           'allintext:"la auto"',
           'allintext:"el casa"',
-          'allintext:"el auto"',
+          'allintext:"el auto"'
         ]
       end
 
@@ -123,10 +123,11 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     context 'with category' do
       before { create(:article_with_words, words: %w[la el lo]) }
+
       let(:query) { 'durante <:article:> <?>' }
-      let(:expected_regex_pattern) {
+      let(:expected_regex_pattern) do
         'durante[[:space:]]+(la|el|lo)[[:space:]]+(?<target>[[:alpha:]]+)'
-      }
+      end
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -142,9 +143,9 @@ RSpec.describe Search, type: :model, vcr: {} do
 
       let(:query) { '<:article:> <:name:> <?>' }
 
-      let(:expected_regex_pattern) {
+      let(:expected_regex_pattern) do
         '(la|el)[[:space:]]+(casa|auto)[[:space:]]+(?<target>[[:alpha:]]+)'
-      }
+      end
 
       it 'generates a regex' do
         expect(subject.pattern).to be_an_instance_of(Regexp)
@@ -255,12 +256,12 @@ RSpec.describe Search, type: :model, vcr: {} do
     let(:word) { 'conflicto' }
     let(:context) { 'Durante el conflicto belico en Europa.' }
 
-    let(:page) {
+    let(:page) do
       Page.create(
         link: 'http://wikipedia.com/bla.htm',
         body: 'body bla bla.' + word + 'something else here.'
       )
-    }
+    end
 
     before do
       quietly do

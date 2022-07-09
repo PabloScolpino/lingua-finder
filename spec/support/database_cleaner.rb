@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   DatabaseCleaner.url_whitelist = [
     'postgres://postgres@postgres/lingua_finder_test',
@@ -19,6 +21,7 @@ RSpec.configure do |config|
         uncommitted transaction data setup over the spec's database connection.
       MSG
     end
+
     DatabaseCleaner.clean_with(:truncation)
   end
 

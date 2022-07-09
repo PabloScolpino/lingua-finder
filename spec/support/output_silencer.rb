@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def quietly
   @original_stderr = $stderr
   @original_stdout = $stdout

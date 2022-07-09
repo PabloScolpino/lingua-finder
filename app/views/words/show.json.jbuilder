@@ -1,1 +1,1 @@
-json.partial! "words/word", word: @word
+json.partial! 'words/word', word: @word

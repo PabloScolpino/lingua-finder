@@ -1,0 +1,6 @@
+#
+# See https://docs.rubocop.org/rubocop/configuration
+#
+AllCops:
+  Exclude:
+    - 'db/schema.rb'

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   authenticated :user do
     root to: 'searches#index', as: :authenticated_root
@@ -7,12 +7,12 @@ Rails.application.routes.draw do
   root 'home#index'
 
   devise_scope :user do
-   get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+    get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
   end
 
   resources :words
   resources :categories
-  resources :searches, exept: [:edit,:update] do
+  resources :searches, exept: %i[edit update] do
     get 'results/:word', to: 'results#index', as: :results
     get 'results/:word/:id', to: 'results#show', as: :result
   end

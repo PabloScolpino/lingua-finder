@@ -1,15 +1,15 @@
 class SearchesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user
-  before_action :set_search, only: [:show, :destroy]
-  before_action :set_searches, only: [:index, :create]
+  before_action :set_search, only: %i[show destroy]
+  before_action :set_searches, only: %i[index create]
 
   def index
     @search = Search.new
   end
 
   def show
-    @results =  @search.results.group(:word).count
+    @results = @search.results.group(:word).count
   end
 
   def create
@@ -35,20 +35,22 @@ class SearchesController < ApplicationController
   end
 
   private
-    def set_user
-      @user = User.find(current_user.id)
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_search
-      @search = @user.searches.find(params[:id])
-    end
 
-    def set_searches
-      @searches = @user.searches
-    end
+  def set_user
+    @user = User.find(current_user.id)
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def search_params
-      params.require(:search).permit(:query, :country_code)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_search
+    @search = @user.searches.find(params[:id])
+  end
+
+  def set_searches
+    @searches = @user.searches
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def search_params
+    params.require(:search).permit(:query, :country_code)
+  end
 end

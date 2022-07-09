@@ -37,11 +37,11 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
-  if ENV["LOG_LEVEL"].present?
-    config.log_level = ENV["LOG_LEVEL"].downcase.to_sym
-  else
-    config.log_level = :debug
-  end
+  config.log_level = if ENV['LOG_LEVEL'].present?
+                       ENV['LOG_LEVEL'].downcase.to_sym
+                     else
+                       :debug
+                     end
 
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
@@ -58,7 +58,7 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)

@@ -17,7 +17,7 @@ module LinguaFinder
     end
 
     def has_child?(class_name)
-      self.class == class_name
+      instance_of?(class_name)
     end
   end
 
@@ -134,11 +134,11 @@ module LinguaFinder
 
     def pattern
       p = '(?<target>'
-      if elements.size > 0
-        p += elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
-      else
-        p += '[[:alpha:]]+)'
-      end
+      p += if elements.size > 0
+             elements.first.pattern + ')' + '([[:space:]]|[[:punct:]])+'
+           else
+             '[[:alpha:]]+)'
+           end
       p
     end
   end
