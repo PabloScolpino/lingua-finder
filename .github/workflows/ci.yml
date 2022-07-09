@@ -34,13 +34,14 @@ jobs:
         run: bin/rails db:create db:schema:load
 
       - name: Run tests
-        uses: paambaati/codeclimate-action@v3.0.0
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           RAILS_ENV: test
           REDIS_URL: redis://localhost
           DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
           MONGODB_URI: mongodb://localhost/lingua_finder_test
-        with:
-          coverageCommand: bundle exec rspec
+        run: bundle exec rspec
 
+      - name: Upload coverage results
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
