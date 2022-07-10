@@ -274,6 +274,8 @@ GEM
     rspec-expectations (3.9.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
+    rspec-github (2.3.1)
+      rspec-core (~> 3.0)
     rspec-mocks (3.9.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
@@ -407,6 +409,7 @@ DEPENDENCIES
   rerun
   responders (< 3)
   rollbar
+  rspec-github
   rspec-rails
   ruby-prof (>= 0.17.0)
   sass-rails (~> 5.0)

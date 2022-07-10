@@ -35,9 +35,9 @@ gem 'uglifier', '>= 1.3.0'
 group :test do
   gem 'database_cleaner-active_record'
   gem 'database_cleaner-mongoid'
-  # gem 'database_cleaner'
   gem 'fakeredis'
   gem 'rails-controller-testing'
+  gem 'rspec-github', require: false
 end
 
 group :development, :test do
