@@ -4,45 +4,38 @@ source 'https://rubygems.org'
 
 ruby '2.4.4'
 
-gem 'pg'
-gem 'puma', '~> 4.3'
-gem 'rails', '~> 5.0.0'
-
-# Error monitoring
-gem 'lograge'
-gem 'oj'
-gem 'rollbar'
-
+gem 'active_interaction'
 gem 'coffee-rails', '~> 4.2'
-gem 'uglifier', '>= 1.3.0'
-
-gem 'jbuilder', '~> 2.5'
-gem 'jquery-rails'
-gem 'turbolinks', '~> 5'
-
-gem 'mongoid'
-
-gem 'devise'
-gem 'omniauth-google-oauth2'
-gem 'responders', '< 3'
-
-gem 'sidekiq', '< 6'
-
 gem 'country_select'
-gem 'material_icons'
-gem 'materialize-sass'
-gem 'sass-rails', '~> 5.0'
-gem 'simple_form'
-gem 'slim-rails'
-
+gem 'devise'
 gem 'google_custom_search_api'
 gem 'httparty'
-
+gem 'jbuilder', '~> 2.5'
+gem 'jquery-rails'
+gem 'lograge'
+gem 'material_icons'
+gem 'materialize-sass'
+gem 'mongoid'
+gem 'oj'
+gem 'omniauth-google-oauth2'
+gem 'pg'
 gem 'pragmatic_segmenter'
+gem 'puma', '~> 4.3'
+gem 'rails', '~> 5.0.0'
+gem 'responders', '< 3'
+gem 'rollbar'
+gem 'sass-rails', '~> 5.0'
+gem 'sidekiq', '< 6'
+gem 'simple_form'
+gem 'slim-rails'
 gem 'treetop'
+gem 'turbolinks', '~> 5'
+gem 'uglifier', '>= 1.3.0'
 
 group :test do
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
+  gem 'database_cleaner-mongoid'
+  # gem 'database_cleaner'
   gem 'fakeredis'
   gem 'rails-controller-testing'
 end
@@ -68,6 +61,3 @@ group :development do
   gem 'listen', '~> 3.0.5'
   gem 'pry-rails'
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

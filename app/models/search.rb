@@ -20,7 +20,7 @@ class Search < ApplicationRecord
 
   def scrape_internet
     queries.map do |query|
-      SearchQuery.process(string: query, config: options)
+      SearchQuery::Create.run!(string: query, config: options)
     end.flatten
   end
 
