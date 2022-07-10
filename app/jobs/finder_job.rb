@@ -6,6 +6,6 @@ class FinderJob < ApplicationJob
   end
 
   def perform(search_id:)
-    Search.dispatch_downloads(search_id)
+    Search::CreateQueries.run!(search_id: search_id)
   end
 end

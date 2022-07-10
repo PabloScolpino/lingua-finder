@@ -5,107 +5,28 @@ require 'rails_helper'
 RSpec.describe Search, type: :model, vcr: {} do
   include ActiveJob::TestHelper
 
-  describe '#queries' do
+  describe 'query validation', :focus do
     subject { create(:search, query: query) }
 
     context 'invalid query' do
       let(:query) { 'durante' }
 
-      it 'raises error' do
-        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
-      end
+      it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
     end
 
     context 'invalid query 2' do
       let(:query) { '<?>' }
 
-      it 'raises error' do
-        expect { subject.query }.to raise_error(ActiveRecord::RecordInvalid)
-      end
+      it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
     end
 
-    context 'string plus target' do
+    context 'valid query' do
       let(:query) { 'durante la <?>' }
-      let(:expected_queries) do
-        [
-          'allintext:"durante la"'
-        ]
-      end
 
-      it 'can generate a list of queries' do
-        expect(subject.queries).to match_array(expected_queries)
-      end
-    end
-
-    context 'with category' do
-      before { create(:article_with_words, words: %w[la el lo]) }
-      let(:query) { 'durante <:article:> <?>' }
-
-      let(:expected_queries) do
-        [
-          'allintext:"durante la"',
-          'allintext:"durante el"',
-          'allintext:"durante lo"'
-        ]
-      end
-
-      it 'generates a list of queries' do
-        expect(subject.queries).to match_array(expected_queries)
-      end
-    end
-
-    context 'with multiple categories' do
-      before do
-        create(:article_with_words, words: %w[la el])
-        create(:name_with_words, words: %w[casa auto])
-      end
-
-      let(:query) { '<:article:> <:name:> <?>' }
-
-      let(:expected_queries) do
-        [
-          'allintext:"la casa"',
-          'allintext:"la auto"',
-          'allintext:"el casa"',
-          'allintext:"el auto"'
-        ]
-      end
-
-      it 'generates a list of queries' do
-        expect(subject.queries).to match_array(expected_queries)
-      end
-    end
-
-    context 'with empty category' do
-      before do
-        create(:article_with_words, words: [])
-      end
-
-      let(:query) { 'durante <:article:> <?>' }
-
-      it 'generates a empty list' do
-        expect(subject.queries).to match_array([])
-      end
-    end
-
-    context 'with category and filter' do
-      before do
-        create(:article_with_words)
-      end
-
-      let(:query) { 'durante <:article:/.*a.*/> <?>' }
-
-      let(:expected_queries) do
-        [
-          'allintext:"durante la"'
-        ]
-      end
-
-      it 'generates a list of queries' do
-        expect(subject.queries).to match_array(expected_queries)
-      end
+      it { expect { subject }.not_to raise_error }
     end
   end
+
 
   describe '#pattern' do
     subject { create(:search, query: query) }
@@ -271,32 +192,6 @@ RSpec.describe Search, type: :model, vcr: {} do
 
     it 'can record all the entires on the db' do
       expect(subject.results).not_to be_empty
-    end
-  end
-
-  describe '.dispatch_downloads' do
-    subject { create(:search) }
-
-    before do
-      quietly do
-        Search.dispatch_downloads(subject.id)
-      end
-    end
-
-    it 'queues download jobs' do
-      have_enqueued_job(DownloaderJob)
-    end
-  end
-
-  xdescribe '#scrape_internet' do
-    subject { create(:search) }
-
-    before do
-      @results = subject.scrape_internet
-    end
-
-    it 'gets internet results' do
-      expect(@results).not_to be_empty
     end
   end
 

@@ -11,23 +11,6 @@ class Search < ApplicationRecord
   after_commit :queue_search, on: :create
   before_destroy :check_processing
 
-  # Query google and then queue each link for further processing
-  def self.dispatch_downloads(search_id)
-    Search.find(search_id).scrape_internet.each do |page_id|
-      DownloaderJob.perform_later search_id: search_id, page_id: page_id
-    end
-  end
-
-  def scrape_internet
-    queries.map do |query|
-      SearchQuery::Create.run!(string: query, config: options)
-    end.flatten
-  end
-
-  def queries
-    parsed_query.strings
-  end
-
   # Download the given link and process the page
   def self.download_and_process(search_id, page_id)
     Search.find(search_id).process_one_page(page_id)

@@ -10,8 +10,8 @@ class SearchQuery
     end
 
     def execute
-      query
       perform_query unless query.performed?
+      query
     end
 
     private

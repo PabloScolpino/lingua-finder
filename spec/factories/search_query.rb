@@ -10,6 +10,17 @@ FactoryBot.define do
         fileType: '-pdf'
       }
     }
+
     performed { false }
+
+    trait :performed do
+      transient do
+        page_count { 2 }
+      end
+
+      after :create do |search_query, evaluator|
+        search_query.pages = evaluator.create_list(:page, evaluator.page_count)
+      end
+    end
   end
 end
