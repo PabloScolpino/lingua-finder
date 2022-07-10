@@ -3,12 +3,15 @@
 class SearchQuery
   class Create < ApplicationInteraction
     string :string
-    hash :config
+    hash :config do
+      string :cr
+      string :language
+      string :fileType
+    end
 
     def execute
       query
-      maybe_perform_query
-      query.pages.map(&:id)
+      perform_query unless query.performed?
     end
 
     private
@@ -17,9 +20,7 @@ class SearchQuery
       @query ||= SearchQuery.find_or_create_by(string: string, config: config)
     end
 
-    def maybe_perform_query
-      return if query.performed?
-
+    def perform_query
       links_from_google_search.each do |link|
         query.pages << Page.find_or_create_by(link: link)
       end
