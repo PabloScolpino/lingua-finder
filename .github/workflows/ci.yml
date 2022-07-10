@@ -33,15 +33,15 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
-        run: bin/rails db:create db:schema:load
+        run: bundle exec rake db:create db:schema:load
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          REDIS_URL: redis://localhost
+          REDIS_URL: redis://localhost/0
           DATABASE_URL: postgres://postgres@localhost/lingua_finder_test
           MONGODB_URI: mongodb://localhost/lingua_finder_test
-        run: bundle exec rspec
+        run: bundle exec rspec --format RSpec::Github::Formatter
 
       - name: Upload coverage results
         uses: paambaati/codeclimate-action@v3.0.0
