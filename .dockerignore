@@ -1,10 +1,19 @@
 .git
-
 .dockerignore
-.byebug_history
+.env
+.env.*.local
+
+/.bundle
+/.foreman
 
 Dockerfile
 docker-compose.yml
 
 log/*
 tmp/*
+coverage
+
+.DS_Store
+.byebug_history
+*.swp
+*.swo
