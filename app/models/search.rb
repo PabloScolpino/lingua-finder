@@ -42,7 +42,8 @@ class Search < ApplicationRecord
   end
 
   def process_one_page(page_id)
-    page = Page.find_or_download_by(id: page_id)
+    Page::Get.run!(id: page_id)
+    page = Page.find(id: page_id)
     sentences = split_body(page.body)
 
     sentences.each do |sentence|

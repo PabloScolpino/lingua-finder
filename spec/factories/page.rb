@@ -2,7 +2,10 @@
 
 FactoryBot.define do
   factory :page do
-    link { Faker::Internet.url }
-    body { Faker::Lorem.paragraph }
+    link { 'http://www.example.com/page.html' }
+
+    trait :with_content do
+      body { Faker::Lorem.paragraph }
+    end
   end
 end
