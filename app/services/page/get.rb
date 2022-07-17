@@ -5,14 +5,22 @@ class Page
     string :id
 
     def execute
-      find_or_download(id)
+      find_or_download
+      page
     end
 
     private
 
-    def find_or_download(id)
-      page = Page.find(id)
-      page.body = download(page.link) if page.body.blank?
+    def page
+      @page ||= Page.find(id)
+    end
+
+    def link
+      CGI.unescape(page.link)
+    end
+
+    def find_or_download
+      page.body = download(link) if page.body.blank?
       page.save!
     rescue EncodingError
       raise PageError, 'could not store page'
@@ -20,11 +28,11 @@ class Page
 
     USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0 Safari/537.36'
 
-    def download(link)
+    def download(url)
       # TODO: handle requests errors
       #   response = HTTParty.get(link, {timeout: timeout})
       begin
-        response = HTTParty.get(link, headers: { 'User-Agent' => USER_AGENT })
+        response = HTTParty.get(url, headers: { 'User-Agent' => USER_AGENT })
       rescue StandardError
         raise PageError, 'Unable to retrieve page'
       end

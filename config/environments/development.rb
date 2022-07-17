@@ -45,6 +45,8 @@ Rails.application.configure do
                        :debug
                      end
 
+  config.mongoid.logger.level = Logger::INFO
+
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.

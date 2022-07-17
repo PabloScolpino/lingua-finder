@@ -11,39 +11,8 @@ class Search < ApplicationRecord
   after_commit :queue_search, on: :create
   before_destroy :check_processing
 
-  # Download the given link and process the page
-  def self.download_and_process(search_id, page_id)
-    Search.find(search_id).process_one_page(page_id)
-  end
-
-  def pattern
-    parsed_query.pattern
-  end
-
   def language
     'es'
-  end
-
-  def process_one_page(page_id)
-    Page::Get.run!(id: page_id)
-    page = Page.find(id: page_id)
-    sentences = split_body(page.body)
-
-    sentences.each do |sentence|
-      next unless (matched = pattern.match(sentence))
-
-      add_result(
-        word: matched[:target],
-        context: sentence,
-        page_id: page.id
-      )
-    end
-  rescue PageError
-    Rails.logger.warning 'error processing page'
-  end
-
-  def add_result(word:, context:, page_id:)
-    results.find_or_create_by(word: word, context: context, page_id: page_id)
   end
 
   def filename
@@ -53,15 +22,11 @@ class Search < ApplicationRecord
     end
   end
 
-  private
-
-  def options
-    o = {}
-    o[:cr] = "country#{country_code}" if country_code.present?
-    o[:language] = language.to_s if language.present?
-    o[:fileType] = '-pdf'
-    o
+  def queue_search
+    SearchCreateQueriesJob.perform_later(search_id: id.to_s)
   end
+
+  private
 
   def check_processing
     # TODO: check search status before deleting
@@ -71,19 +36,10 @@ class Search < ApplicationRecord
     @parsed_query ||= Parser.parse(query)
   end
 
-  def queue_search
-    FinderJob.perform_later(search_id: id)
-  end
-
-  def split_body(body)
-    PragmaticSegmenter::Segmenter.new(text: body, language: language).segment
-  rescue ArgumentError
-    []
-  end
-
   def query_must_follow_grammar
     errors.add(:invalid_query, 'The query is invalid') unless parsed_query.valid?
   rescue StandardError
     errors.add(:error_parsing_query, 'There was an error parsing the query')
   end
+
 end

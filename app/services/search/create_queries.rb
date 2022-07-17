@@ -5,7 +5,6 @@ class Search
     string :search_id
 
     def execute
-      ap search
       queue_page_downloads(create_search_queries)
     end
 
@@ -20,8 +19,8 @@ class Search
     end
 
     def create_search_queries
-      queries.each_with_object([]) do |query, search_queries|
-        search_queries << SearchQuery::Create.run!(string: query, config: search_query_config)
+      queries.map do |query|
+        SearchQuery::Create.run!(string: query, config: search_query_config)
       end
     end
 
@@ -36,7 +35,7 @@ class Search
     def queue_page_downloads(search_queries)
       search_queries.each do |search_query|
         search_query.pages.each do |page|
-          DownloaderJob.perform_later search_id: search_id, page_id: page.id
+          SearchAddResultsJob.perform_later search_id: search_id, page_id: page.id
         end
       end
     end

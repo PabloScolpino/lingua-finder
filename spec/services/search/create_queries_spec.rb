@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Search::CreateQueries do
+describe Search::CreateQueries do
   ActiveJob::Base.queue_adapter = :test
 
   subject(:service) { described_class.run!(search_id: search_id) }
@@ -11,19 +11,14 @@ RSpec.describe Search::CreateQueries do
   let(:search_id) { search.id.to_s }
 
   context 'when the search exists' do
-    before do
-      # allow(Parser).to receive(:parse).with(search.query).and_return(double(strings: []))
-
-      allow(SearchQuery::Create).to receive(:run!) do
-        create(:search_query, :performed)
-      end
-    end
+    before { allow(SearchQuery::Create).to receive(:run!).and_return(create(:search_query, :performed)) }
 
     it 'calls SearchQuery::Create' do
-      # expect(Parser).to receive(:parse).with(search.query)
       expect(SearchQuery::Create).to receive(:run!).once
-      expect { service }.to have_enqueued_job(DownloaderJob).twice
+      service
     end
+
+    it { expect { service }.to have_enqueued_job(SearchAddResultsJob).twice }
   end
 
   context 'when the search does not exist' do

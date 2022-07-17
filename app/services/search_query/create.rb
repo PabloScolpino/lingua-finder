@@ -35,7 +35,10 @@ class SearchQuery
     end
 
     def google_response
-      GoogleCustomSearchApi.search_and_return_all_results(string, config)
+      results = GoogleCustomSearchApi.search_and_return_all_results(string, config)
+      raise 'Empty Google Response' if results.empty?
+
+      results
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe FinderJob, type: :job do
+describe SearchCreateQueriesJob, type: :job do
   subject(:job) { described_class.perform_now(search_id: search_id) }
 
   let(:search_id) { '1' }

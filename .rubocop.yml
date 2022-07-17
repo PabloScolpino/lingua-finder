@@ -7,6 +7,14 @@ AllCops:
   NewCops: disable
   EnabledByDefault: false
 
+Metrics/BlockLength:
+  Exclude:
+    - 'Guardfile'
+
+Naming/PredicateName:
+  Exclude:
+    - 'app/lib/node_extensions.rb'
+
 Style/Documentation:
   Enabled: false
 
