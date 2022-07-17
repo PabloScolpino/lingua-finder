@@ -17,6 +17,8 @@ RSpec.describe SearchQuery::Create, vcr: {} do
 
   let(:result) { build(:google_custom_search_api_result, :with_results, result_count: 3) }
 
+  it { is_expected.to be_a(SearchQuery) }
+
   context 'when results are found' do
     it 'stores the pages' do
       expect { service }.to change(SearchQuery, :count).by(1).and(change(Page, :count).by(3))

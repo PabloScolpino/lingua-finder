@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:diable Metrics/BlockLength
 guard :rspec, cmd: 'bundle exec rspec --format=doc' do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
@@ -47,7 +46,6 @@ guard :rspec, cmd: 'bundle exec rspec --format=doc' do
 
   watch(%r{^lib/}) { "#{rspec.spec_dir}/models/search_spec.rb" }
 end
-# rubocop:enable Metrics/BlockLength
 
 guard :rubocop, all_on_start: false, cli: ['--display-cop-names'] do
   watch(/.+\.rb$/)
