@@ -1,10 +1,7 @@
-:concurrency: <%= ENV["SIDEKIQ_WORKERS"] || 1 %>
+:concurrency: <%= ENV.fetch('SIDEKIQ_WORKERS', 1) %>
 development:
   :queues:
     - development.default
-staging:
-  :queues:
-    - staging.default
 production:
   :queues:
     - production.default

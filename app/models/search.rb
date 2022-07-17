@@ -41,5 +41,4 @@ class Search < ApplicationRecord
   rescue StandardError
     errors.add(:error_parsing_query, 'There was an error parsing the query')
   end
-
 end

@@ -24,11 +24,13 @@ services:
 
   worker:
     <<: *app-defaults
+    command: bundle exec sidekiq
+    environment:
+      SIDEKIQ_WORKERS: 2
     depends_on:
       - postgres
       - mongodb
       - redis
-    command: bundle exec sidekiq -C config/sidekiq.yml
 
   postgres:
     image: postgres:9.6.15-alpine

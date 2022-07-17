@@ -51,3 +51,8 @@ guard :rubocop, all_on_start: false, cli: ['--display-cop-names'] do
   watch(/.+\.rb$/)
   watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 end
+
+guard :reek, all_on_start: false do
+  watch(/.+\.rb$/)
+  watch(%r{(?:.+/)?\.reek.yml$}) { |m| File.dirname(m[0]) }
+end

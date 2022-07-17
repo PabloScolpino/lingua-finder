@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-#
 
 require 'database_cleaner/active_record'
 require 'database_cleaner/mongoid'
@@ -11,11 +10,8 @@ RSpec.configure do |config|
   ]
 
   config.before(:suite) do
-    # DatabaseCleaner.clean_with(:truncation)
     DatabaseCleaner[:active_record].clean_with(:truncation)
     DatabaseCleaner[:mongoid].clean_with(:deletion)
-    # DatabaseCleaner[:active_record].strategy = :truncation
-    # DatabaseCleaner[:mongoid].strategy = :deletion
   end
 
   config.before(:each) do

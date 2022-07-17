@@ -1,0 +1,16 @@
+---
+
+detectors:
+  IrresponsibleModule:
+    enabled: false
+
+directories:
+  "db/migrate":
+    FeatureEnvy:
+      enabled: false
+
+    UncommunicativeVariableName:
+      enabled: false
+
+    TooManyStatements:
+      enabled: false

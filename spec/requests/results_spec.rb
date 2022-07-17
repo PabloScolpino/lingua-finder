@@ -8,7 +8,7 @@ RSpec.describe 'Results', type: :request do
   describe 'GET /searches/1/results/pepe' do
     context 'signed in' do
       it 'works!' do
-        get search_results_path(search_id: search.id, word: 'pepe')
+        get search_results_path(search_id: search.id, word: 'pepe'), params: {}
         pending 'not mocking omniauth properly'
         expect(response).to have_http_status(200)
       end
