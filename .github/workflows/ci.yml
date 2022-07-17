@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: false
-          target: prod
+          target: production
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
