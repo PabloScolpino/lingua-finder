@@ -10,7 +10,8 @@ module Users
       else
         # Removing extra as it can overflow some session stores
         session['devise.google_data'] = request.env['omniauth.auth'].except(:extra)
-        redirect_to new_user_registration_url, alert: user.errors.full_messages.join("\n")
+        redirect_to new_user_registration_url,
+                    alert: user.errors.full_messages.join("\n")
       end
     end
     # rubocop:enable Metrics/AbcSize
