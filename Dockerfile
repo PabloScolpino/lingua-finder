@@ -11,7 +11,7 @@ FROM ruby:$RUBY_VERSION-slim AS builder-base
 ARG APP_ROOT
 ARG BUNDLER_VERSION
 ARG BUNDLE_PATH
-ARG PACKAGES_BUILD="build-essential libpq-dev nodejs yarnpkg"
+ARG PACKAGES_BUILD="build-essential libpq-dev nodejs"
 
 ENV BUNDLE_PATH=$BUNDLE_PATH
 ENV BUNDLE_BIN="$BUNDLE_PATH/bin"
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y --no-install-recommends $PACKAGES_BUILD && \
-    ln -s /usr/bin/yarnpkg /usr/bin/yarn && \
+    npm install --global yarn && \
     gem update --system 3.2.3 && \
     gem install bundler -v $BUNDLER_VERSION
 
@@ -77,7 +77,7 @@ COPY --from=production-builder $APP_ROOT $APP_ROOT
 #
 FROM builder-base AS development
 LABEL org.opencontainers.image.source https://github.com/pabloscolpino/lingua-finder
-ARG PACKAGES_DEV="postgresql-client xvfb"
+ARG PACKAGES_DEV="postgresql-client xvfb librust-gobject-sys-dev libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth"
 ARG PACKAGES_RUNTIME
 
 RUN apt-get update && apt-get upgrade -y && \

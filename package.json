@@ -1,0 +1,7 @@
+{
+  "name": "lingua-finder",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^10.3.1"
+  }
+}
