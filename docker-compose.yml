@@ -14,9 +14,7 @@ services:
     <<: *app-defaults
     build:
       context: .
-      # target: builder-base
       target: development
-      # target: production
     depends_on:
       - postgres
       - mongodb
