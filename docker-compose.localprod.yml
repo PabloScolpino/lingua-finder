@@ -1,0 +1,34 @@
+---
+version: "3"
+
+x-app-defaults: &app-defaults
+  image: ghcr.io/pabloscolpino/lingua-finder:latest
+  entrypoint: ''
+  environment:
+    DATABASE_URL: postgres://postgres@postgres/lingua_finder_p
+    MONGODB_URI: mongodb://mongodb/lingua_finder_p
+    REDIS_URL: redis://redis/0
+    PORT: 3000
+    RAILS_MAX_WORKERS: 1
+    RAILS_LOG_TO_STDOUT: true
+    DB_POOL: 20
+    SIDEKIQ_WORKERS: 2
+    SECRET_KEY_BASE: some-very-big-secret
+
+    GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+    GOOGLE_SEARCH_CX: ${GOOGLE_SEARCH_CX}
+
+    OA2_GOOGLE_CLIENT_ID: ${OA2_GOOGLE_CLIENT_ID}
+    OA2_GOOGLE_CLIENT_SECRET: ${OA2_GOOGLE_CLIENT_SECRET}
+  volumes: []
+
+
+services:
+  web:
+    <<: *app-defaults
+    build:
+      context: .
+      target: production
+
+  worker:
+    <<: *app-defaults
