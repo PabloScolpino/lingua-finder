@@ -1,6 +1,4 @@
 ---
-replicaCount: 1
-
 image:
   repository: ghcr.io/pabloscolpino/lingua-finder
   pullPolicy: Always
@@ -62,12 +60,23 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+replicas:
+  web:
+    count: 1
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 80
+      # targetMemoryUtilizationPercentage: 80
+  worker:
+    count: 2
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 80
+      # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

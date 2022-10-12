@@ -2,12 +2,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "lingua-finder.fullname" . }}
+  name: {{ include "lingua-finder.fullname" . }}-web
   labels:
     {{- include "lingua-finder.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- with .Values.replicas.web }}
+  {{- if not .autoscaling.enabled }}
+  replicas: {{ .count }}
+  {{- end }}
   {{- end }}
   selector:
     matchLabels:
@@ -20,25 +22,28 @@ spec:
       {{- end }}
       labels:
         {{- include "lingua-finder.selectorLabels" . | nindent 8 }}
+
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "lingua-finder.serviceAccountName" . }}
+
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-web
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+        - name: web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+
           envFrom:
             - configMapRef:
                 name: {{ include "lingua-finder.fullname" . }}
@@ -56,20 +61,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
-        - name: {{ .Chart.Name }}-worker
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["bundle", "exec", "sidekiq"]
-          envFrom:
-            - configMapRef:
-                name: {{ include "lingua-finder.fullname" . }}
-            - secretRef:
-                name: {{ .Values.secretName }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
