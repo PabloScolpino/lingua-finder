@@ -68,6 +68,6 @@ jobs:
         run: bundle exec rspec --format RSpec::Github::Formatter
 
       - name: Upload coverage results
-        uses: paambaati/codeclimate-action@v3
+        uses: paambaati/codeclimate-action@v3.1.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
