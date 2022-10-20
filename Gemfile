@@ -46,8 +46,8 @@ group :development, :test do
   gem 'faker', '~> 2.10.2'
   gem 'rspec-rails', '~> 3.9.1'
   gem 'ruby-prof', '~> 1.2.0', require: false
-  gem 'simplecov', '~> 0.18.5'
-  gem 'simplecov-lcov', '~> 0.8.0'
+  gem 'simplecov'
+  gem 'simplecov-lcov'
   gem 'vcr', '~> 5.1.0'
   gem 'webmock', '~> 3.8.3'
 end
