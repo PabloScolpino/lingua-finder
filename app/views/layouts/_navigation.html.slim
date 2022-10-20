@@ -16,7 +16,7 @@
 
         - if user_signed_in?
           li
-            = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
+            = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3', data: { cy: 'logout' }
 
   ul#slide-out.sidenav
     li
@@ -32,6 +32,6 @@
 
     - if user_signed_in?
       li
-        = link_to "Cerrar Sesion #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3'
+        = link_to "Cerrar Session #{current_user.name}", destroy_user_session_path(), class: 'blue darken-3', data: { cy: 'logout-mobile' }
   a.sidenav-trigger data-target='slide-out' href='#'
     i.material-icons menu

@@ -11,4 +11,4 @@
 
   .row.sign_in
     .center
-      = link_to "Ingresar con Google", user_google_oauth2_omniauth_authorize_path, class: 'login-btn google'
+      = link_to "Ingresar con Google", user_google_oauth2_omniauth_authorize_path, class: 'login-btn google', data: { cy: 'login' }

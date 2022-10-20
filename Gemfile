@@ -41,6 +41,7 @@ end
 
 group :development, :test do
   gem 'awesome_print', '~> 1.8.0'
+  gem 'cypress-on-rails', '~> 1.0'
   gem 'dotenv-rails', '~> 2.7.6'
   gem 'factory_bot_rails', '~> 5.1.1'
   gem 'faker', '~> 2.10.2'
