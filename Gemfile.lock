@@ -74,9 +74,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    cypress-rails (0.5.4)
-      puma (>= 3.8.0)
-      railties (>= 5.2.0)
     database_cleaner-active_record (2.0.1)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -422,7 +419,6 @@ DEPENDENCIES
   awesome_print (~> 1.8.0)
   coffee-rails (~> 4)
   country_select (~> 4.0)
-  cypress-rails
   database_cleaner-active_record (~> 2.0.1)
   database_cleaner-mongoid (~> 2.0.1)
   devise (~> 4.7)
