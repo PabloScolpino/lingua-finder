@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.5.9'
+ruby '2.6.10'
 
 gem 'active_interaction', '~> 3.8'
 gem 'coffee-rails', '~> 4'

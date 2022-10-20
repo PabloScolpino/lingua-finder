@@ -2,7 +2,7 @@ ARG APP_ROOT=/app
 ARG BUNDLER_VERSION=2.3.19
 ARG BUNDLE_PATH=/bundler
 ARG PACKAGES_RUNTIME="libpq5 nodejs"
-ARG RUBY_VERSION=2.5.9
+ARG RUBY_VERSION=2.6.10
 
 ################################################################################
 # Base configuration
