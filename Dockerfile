@@ -11,7 +11,7 @@ FROM ruby:$RUBY_VERSION-slim AS builder-base
 ARG APP_ROOT
 ARG BUNDLER_VERSION
 ARG BUNDLE_PATH
-ARG PACKAGES_BUILD="build-essential libpq-dev nodejs yarnpkg"
+ARG PACKAGES_BUILD="build-essential libpq-dev nodejs"
 
 ENV BUNDLE_PATH=$BUNDLE_PATH
 ENV BUNDLE_BIN="$BUNDLE_PATH/bin"
@@ -22,8 +22,6 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y --no-install-recommends $PACKAGES_BUILD && \
-    ln -s /usr/bin/yarnpkg /usr/bin/yarn && \
-    gem update --system 3.2.3 && \
     gem install bundler -v $BUNDLER_VERSION
 
 ENV NODE_PATH=/usr/lib/nodejs:/usr/share/nodejs
@@ -66,7 +64,6 @@ ENV RAILS_ENV=production
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends $PACKAGES_RUNTIME && \
-    gem update --system 3.2.3 && \
     gem install bundler -v $BUNDLER_VERSION
 
 COPY --from=production-builder $BUNDLE_PATH $BUNDLE_PATH
