@@ -24,12 +24,20 @@ services:
     command: bundle exec rails server -b 0.0.0.0
 
   cypress:
-    <<: *app-defaults
+    image: cypress/included:10.3.0
+    command: open --project /app
+    entrypoint: cypress
+    stdin_open: true
+    tty: true
     depends_on:
       - web
-    ports:
-      - "13000:3000"
-    command: yarn cypress run
+    environment:
+      CYPRESS_baseUrl: http://web:3000
+      DISPLAY: ${CYPRESS_DISPLAY}
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /tmp/.X11-unix/:/tmp/.X11-unix
 
   worker:
     <<: *app-defaults
