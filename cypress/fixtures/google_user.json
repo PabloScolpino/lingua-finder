@@ -1,0 +1,8 @@
+{
+  "provider": "google_oauth2",
+  "uid": "123456789012345678901",
+  "name": "mocked_name",
+  "info": {
+    "email": "mocked.name@gmail.com"
+  }
+}

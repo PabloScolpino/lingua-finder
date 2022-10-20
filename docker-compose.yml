@@ -3,6 +3,8 @@ version: "3"
 
 x-app-defaults: &app-defaults
   image: "ghcr.io/pabloscolpino/lingua-finder:development"
+  stdin_open: true
+  tty: true
   entrypoint: bin/docker-entrypoint.sh
   volumes:
     - .:/app
@@ -22,6 +24,30 @@ services:
     ports:
       - "13000:3000"
     command: bundle exec rails server -b 0.0.0.0
+
+  web-cypress:
+    <<: *app-defaults
+    build:
+      context: .
+      target: development
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    environment:
+      CYPRESS: 1
+    command: bundle exec rails server -b 0.0.0.0 --pid /app/tmp/cypress-s.pid
+
+  cypress:
+    <<: *app-defaults
+    command: yarn run cypress open --project /app --e2e --browser electron
+    depends_on:
+      - web-cypress
+    entrypoint: bin/cypress-entrypoint.sh
+    environment:
+      CYPRESS_baseUrl: http://web-cypress:3000
+      DISPLAY: ${CYPRESS_DISPLAY}
+      CYPRESS_CACHE_FOLDER: /app/node_modules/.cypress_cache
 
   worker:
     <<: *app-defaults
@@ -62,3 +88,4 @@ volumes:
   redis-data:
   bundler:
   node_modules:
+  cypress_cache:

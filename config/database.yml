@@ -8,6 +8,7 @@ default: &default
 
 development:
   <<: *default
+  database: <%= ENV['CYPRESS'] ? 'lingua_finder_test' : 'lingua_finder_dev' %>
   url: <%= ENV['DATABASE_URL'] %>
 
 test:

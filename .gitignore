@@ -6,6 +6,9 @@
 !/log/.keep
 !/tmp/.keep
 
+/cypress/videos/*
+/cypress/screenshots/*
+
 .env
 .env.*.local
 
