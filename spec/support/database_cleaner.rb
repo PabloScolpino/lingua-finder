@@ -5,7 +5,7 @@ require 'database_cleaner/mongoid'
 
 RSpec.configure do |config|
   DatabaseCleaner.url_whitelist = [
-    'postgres://postgres@postgres/lingua_finder_test',
+    'postgres://lingua-finder:lingua-finder@postgres/lingua_finder_test',
     'postgres://postgres@localhost/lingua_finder_test'
   ]
 
