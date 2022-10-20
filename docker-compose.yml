@@ -38,7 +38,7 @@ services:
     # image: bitnami/postgresql:14.5.0
     environment:
       POSTGRES_USER: lingua-finder
-      POSTGRESQL_PASSWORD: lingua-finder
+      POSTGRES_PASSWORD: lingua-finder
     volumes:
       - pg-data:/var/lib/postgresql/data
 
