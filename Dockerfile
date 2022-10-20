@@ -1,15 +1,17 @@
 ARG APP_ROOT=/app
+ARG BUNDLER_VERSION=2.3.19
 ARG BUNDLE_PATH=/bundler
+ARG PACKAGES_RUNTIME="libpq5 nodejs"
 ARG RUBY_VERSION=2.5.9
-ARG PACKAGES_RUNTIME="tzdata libpq5 nodejs"
 
 ################################################################################
 # Base configuration
 #
 FROM ruby:$RUBY_VERSION-slim AS builder-base
 ARG APP_ROOT
-ARG PACKAGES_BUILD="build-essential libpq-dev nodejs yarn"
+ARG BUNDLER_VERSION
 ARG BUNDLE_PATH
+ARG PACKAGES_BUILD="build-essential libpq-dev nodejs yarnpkg"
 
 ENV BUNDLE_PATH=$BUNDLE_PATH
 ENV BUNDLE_BIN="$BUNDLE_PATH/bin"
@@ -17,7 +19,15 @@ ENV BUNDLE_BIN="$BUNDLE_PATH/bin"
 WORKDIR $APP_ROOT
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends $PACKAGES_BUILD
+    apt-get install -y --no-install-recommends curl && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y --no-install-recommends $PACKAGES_BUILD && \
+    ln -s /usr/bin/yarnpkg /usr/bin/yarn && \
+    gem update --system 3.2.3 && \
+    gem install bundler -v $BUNDLER_VERSION
+
+ENV NODE_PATH=/usr/lib/nodejs:/usr/share/nodejs
+
 COPY Gemfile Gemfile.lock $APP_ROOT/
 
 ################################################################################
@@ -42,6 +52,7 @@ RUN bundle exec rake assets:precompile
 FROM ruby:$RUBY_VERSION-slim AS production
 LABEL org.opencontainers.image.source https://github.com/pabloscolpino/lingua-finder
 ARG APP_ROOT
+ARG BUNDLER_VERSION
 ARG BUNDLE_PATH
 ARG PACKAGES_RUNTIME
 
@@ -54,7 +65,9 @@ ENV BUNDLE_WITHOUT='development:test'
 ENV RAILS_ENV=production
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends $PACKAGES_RUNTIME
+    apt-get install -y --no-install-recommends $PACKAGES_RUNTIME && \
+    gem update --system 3.2.3 && \
+    gem install bundler -v $BUNDLER_VERSION
 
 COPY --from=production-builder $BUNDLE_PATH $BUNDLE_PATH
 COPY --from=production-builder $APP_ROOT $APP_ROOT
