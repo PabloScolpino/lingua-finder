@@ -59,4 +59,5 @@ group :development do
   gem 'listen'
   gem 'pessimize', '~> 0.4.0'
   gem 'pry-rails'
+  gem 'rubocop', '= 1.31.0'
 end
