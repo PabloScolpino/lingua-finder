@@ -125,7 +125,7 @@ GEM
     faraday-retry (1.0.3)
     ffi (1.15.5)
     formatador (1.1.0)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     google_custom_search_api (2.0.0)
       addressable
