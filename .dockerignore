@@ -1,14 +1,13 @@
 .git
 .dockerignore
+Dockerfile
+docker-compose.yml
+
 .env
 .env.*.local
 
 /.bundle
 /.foreman
-
-Dockerfile
-docker-compose.yml
-
 log/*
 tmp/*
 coverage

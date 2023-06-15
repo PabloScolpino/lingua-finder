@@ -1,11 +1,13 @@
 #
 # See https://docs.rubocop.org/rubocop/configuration
 #
+---
 AllCops:
   Exclude:
     - 'db/schema.rb'
   NewCops: disable
   EnabledByDefault: false
+  SuggestExtensions: false
 
 Metrics/BlockLength:
   Exclude:
