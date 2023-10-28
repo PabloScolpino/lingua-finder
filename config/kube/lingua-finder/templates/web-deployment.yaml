@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "lingua-finder.fullname" . }}-worker
+  name: {{ include "webapp.fullname" . }}-web
   labels:
-    {{- include "lingua-finder.labels" . | nindent 4 }}
+    {{- include "webapp.labels" . | nindent 4 }}
 spec:
-  {{- with .Values.replicas.worker }}
+  {{- with .Values.replicas.web }}
   {{- if not .autoscaling.enabled }}
   replicas: {{ .count }}
   {{- end }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "lingua-finder.selectorLabels" . | nindent 6 }}
+      {{- include "webapp.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -21,36 +21,48 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "lingua-finder.selectorLabels" . | nindent 8 }}
+        {{- include "webapp.selectorLabels" . | nindent 8 }}
 
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "lingua-finder.serviceAccountName" . }}
+      serviceAccountName: {{ include "webapp.serviceAccountName" . }}
+
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: worker
-
+        - name: web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
-          command: ["bundle", "exec", "sidekiq"]
+          command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
 
           envFrom:
             - configMapRef:
-                name: {{ include "lingua-finder.fullname" . }}
+                name: {{ include "webapp.fullname" . }}
             - secretRef:
                 name: {{ .Values.secretName }}
 
+          # livenessProbe:
+            # httpGet:
+              # path: /
+              # port: http
+          # readinessProbe:
+            # httpGet:
+              # path: /
+              # port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-
 
       {{- with .Values.nodeSelector }}
       nodeSelector:

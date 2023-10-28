@@ -1,18 +1,18 @@
 {{- $global := . }}
-{{- with .Values.replicas.worker }}
+{{- with .Values.replicas.web }}
 {{- if .autoscaling.enabled }}
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "lingua-finder.fullname" $global }}-worker
+  name: {{ include "webapp.fullname" $global }}-web
   labels:
-    {{- include "lingua-finder.labels" $global | nindent 4 }}
+    {{- include "webapp.labels" $global | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "lingua-finder.fullname" $global }}-worker
+    name: {{ include "webapp.fullname" $global }}-web
   minReplicas: {{ .autoscaling.minReplicas }}
   maxReplicas: {{ .autoscaling.maxReplicas }}
   metrics:
