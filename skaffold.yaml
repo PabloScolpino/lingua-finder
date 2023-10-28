@@ -4,9 +4,16 @@ metadata:
   name: lingua-finder
 
 # NOTE: for local clusters this is likely needed
-# build:
-#   local:
-#     push: false
+build:
+  local:
+    push: false
+    useBuildkit: true
+
+  artifacts:
+    - image: ghcr.io/pabloscolpino/lingua-finder
+      docker:
+        dockerfile: Dockerfile
+        target: development
 
 deploy:
   helm:
@@ -16,4 +23,4 @@ deploy:
         valuesFiles:
           - config/kube/lingua-finder/values.yaml
         version: 0.2.0
-        # namespace: lingua-finder-dev
+        namespace: lingua-finder
