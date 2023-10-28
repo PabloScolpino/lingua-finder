@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-namespace=lingua-finder
+if [[ ! -z $1 ]]; then
+  namespace=$1
+else
+  namespace="lingua-finder"
+fi
+
 kubectl create namespace ${namespace}
 kubectl delete secret/webapp --namespace=${namespace}
 kubectl delete secret/mongodb --namespace=${namespace}

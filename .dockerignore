@@ -17,3 +17,5 @@ coverage
 .byebug_history
 *.swp
 *.swo
+
+config/kube/*

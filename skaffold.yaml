@@ -23,4 +23,4 @@ deploy:
         valuesFiles:
           - config/kube/lingua-finder/values.yaml
         version: 0.2.0
-        namespace: lingua-finder
+        namespace: lingua-finder-dev
